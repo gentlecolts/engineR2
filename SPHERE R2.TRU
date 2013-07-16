@@ -1,0 +1,35 @@
+option nolet
+set window -1,1,-1,1
+
+d=1/(2*tan( (pi/3) /2))
+
+dt=pi/180
+
+c1=1000000000
+
+for i=-pi/2 to pi/2 step dt
+for a=-pi to pi step dt
+
+!s=c1*sin(i/(c1^(1-1/c1)))
+!s=i
+s=tan(i)
+
+n=1/sqr(s*s+1)!changing the constant produces some interesting shapes
+
+!lim(c1->inf) 1/sqrt(( c1*sin(i/(c1^(1-1/c1))) )^2+1)
+!lim(c1->0+) 1/sqrt(( sin( i*(c1^(1-c1)) )/c1 )^2+1)
+
+!a*sin(i)/sqr((a*sin(i))^2+1)
+!a*sin(i)/sqr((a*sin(i))^2+1)
+
+x=cos(a)*n
+y=s*n
+z=sin(a)*n
+
+!s=d/(d+z+1)
+s=1
+
+plot x*s,y*s
+next a
+next i
+end

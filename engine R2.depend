@@ -1,0 +1,81 @@
+# depslib dependency file v1.0
+1373137122 source:c:\users\jack\desktop\programming\c++\engine r2\cam\matrix.cpp
+	"matrix.h"
+	"vec3d.h"
+	<cmath>
+	<cstdio>
+
+1372789568 c:\users\jack\desktop\programming\c++\engine r2\cam\matrix.h
+	<exception>
+
+1373474329 c:\users\jack\desktop\programming\c++\engine r2\cam\vec3d.h
+	"matrix.h"
+
+1373474329 source:c:\users\jack\desktop\programming\c++\engine r2\cam\vec3d.cpp
+	"vec3d.h"
+	"../msc/functions.h"
+	<cmath>
+
+1373484330 c:\users\jack\desktop\programming\c++\engine r2\msc\functions.h
+	<SDL/SDL.h>
+
+1373135307 source:c:\users\jack\desktop\programming\c++\engine r2\engine.cpp
+
+1373933424 source:c:\users\jack\desktop\programming\c++\engine r2\main.cpp
+	<SDL/SDL.h>
+	"engine.h"
+	<cmath>
+	<iostream>
+	<ctime>
+
+1373136112 c:\users\jack\desktop\programming\c++\engine r2\engine.h
+	"cam/camera.h"
+	"cam/matrix.h"
+	"cam/vec3d.h"
+	"msc/functions.h"
+	"msc/surface.h"
+	"vox/vnode.h"
+	"vox/vobj.h"
+
+1373933404 c:\users\jack\desktop\programming\c++\engine r2\cam\camera.h
+	"matrix.h"
+	"vec3d.h"
+	"../msc/surface.h"
+	"../vox/vobj.h"
+
+1372635695 c:\users\jack\desktop\programming\c++\engine r2\msc\surface.h
+	<SDL/SDL.h>
+
+1373482431 c:\users\jack\desktop\programming\c++\engine r2\vox\vnode.h
+	<SDL/SDL.h>
+	"../cam/vec3d.h"
+
+1373496861 source:c:\users\jack\desktop\programming\c++\engine r2\msc\functions.cpp
+	"functions.h"
+	<algorithm>
+
+1372635695 source:c:\users\jack\desktop\programming\c++\engine r2\msc\surface.cpp
+	"surface.h"
+
+1373482545 source:c:\users\jack\desktop\programming\c++\engine r2\vox\vnode.cpp
+	"vnode.h"
+
+1373933596 source:c:\users\jack\desktop\programming\c++\engine r2\cam\camera.cpp
+	<SDL/SDL.h>
+	"camera.h"
+	"../msc/functions.h"
+	<cmath>
+	<string>
+	<omp.h>
+
+1373484748 c:\users\jack\desktop\programming\c++\engine r2\vox\vobj.h
+	"vnode.h"
+
+1373932010 source:c:\users\jack\desktop\programming\c++\engine r2\vox\vobj.cpp
+	"vobj.h"
+	"../msc/functions.h"
+	<algorithm>
+	<cmath>
+	<cstdio>
+	<iostream>
+
