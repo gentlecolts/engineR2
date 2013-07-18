@@ -12,32 +12,16 @@ matrix I(3,3,(mtype*)identityarr);
 
 const long double pi=4*atan(1.0l);
 
+//this appears to be for a more mathematical xyz, where z is up
+///TODO: rederive this to work with my coordinates
 matrix getRotMatrix(vec3d u,double theta){
 	u.normalize();
 	const double c=cos(theta);
-		/*
-		mtype tmp[3][3]={{1,2,3},{4,5,6},{7,8,9}};
-		matrix v(3,3,(mtype*)tmp);//this works
-		printf("v=tmp\nv.r = %i\tv.c = %i\n",v.rows(),v.cols());
-		for(int i=0;i<I.rows();i++){
-			printf("[%f %f %f]\n",v(i,0),v(i,1),v(i,2));
-		}
-		//*/
 	return I*c+u.crossprodMatrix()*sin(theta)+u.tensorProd(u)*(1-c);
 }
 
 const matrix zrot90(getRotMatrix(vec3d(0,0,1),pi/2));
 
-/*
-matrix R;
-vec3d dir,xvec,yvec;
-double focusLen;
-double aspctRatio,width;
-surface* scrn;
-uint32_t* pixels;
-vec3d pos;
-uint32_t bgCol;
-*/
 camera::camera(surface* target,double view_angle,double x0,double y0,double z0)://,double dirx,double diry,double dirz):
 	R(getRotMatrix(vec3d(0,0,1),0)),
 	scrn(target),pixels((uint32_t*)target->pixels),
@@ -57,7 +41,7 @@ point2d camera::getCoords(double x,double y,double z,bool* visible){
 	vec3d v(x,y,z),intrsct,tmp=pos-dir;
 	point2d p;
 	v-=tmp;
-	v.normalize();//by doing this, t becomes the distance
+	//v.normalize();//by doing this, t becomes the distance
 
 	/*
 	vectors: n,p,v,vp
@@ -75,19 +59,27 @@ point2d camera::getCoords(double x,double y,double z,bool* visible){
 	t=-(vp dot n)/(v dot n)
 	*/
 
-	//const double t=-(dir.dot(tmp))/dir.dot(v);
-	const double t=-(dir.dot(v))/(dir.dot(tmp));
+	const double t=-(dir.dot(tmp))/(dir.dot(v));
+	//const double t=-(tmp.dot(dir))/(v.dot(dir));
+	//const double t=-((-dir).dot(tmp))/((-dir).dot(v));
+	//const double t=((-dir).dot(tmp))/((-dir).dot(v));
+	//const double t=(dir.dot(tmp))/(dir.dot(v));
+
+	//const double t=-(dir.dot(v))/(dir.dot(tmp));
+	//const double t=-((-dir).dot(v))/((-dir).dot(tmp));
+	//const double t=((-dir).dot(v))/((-dir).dot(tmp));
+	//const double t=(dir.dot(v))/(dir.dot(tmp));
 	if(visible!=NULL){
 		*visible=(t>=0);
 	}
-	intrsct=tmp+t*v;
+	intrsct=tmp+v*t-pos;
 
-	//p.x=intrsct.dot(xvec)*xvec.invMagSqr();
+	p.x=intrsct.dot(xvec)*xvec.invMagSqr();
 	//p.x=intrsct.dot(xvec)/(width*width/4);
-	p.x=intrsct.dot(xvec)*4/(width*width);
-	//p.y=intrsct.dot(yvec)*yvec.invMagSqr();
+	//p.x=intrsct.dot(xvec)*4/(width*width);
+	p.y=intrsct.dot(yvec)*yvec.invMagSqr();
 	//p.y=intrsct.dot(yvec)/(aspctRatio*aspctRatio*width*width/4);
-	p.y=intrsct.dot(yvec)*4/(aspctRatio*aspctRatio*width*width);
+	//p.y=intrsct.dot(yvec)*4/(aspctRatio*aspctRatio*width*width);
 
 	return p;
 }
@@ -137,9 +129,9 @@ void camera::traceScene(vobj* object){
 	13, 1.0, 0.35, 0.44
 	7, 1.0, 0.7, 1.8
 	*/
-	#define expr (0.2*t*t+0.22*t+1)
+	#define expr ((0.2*t+0.22)*t+1)
 
-	double x,y,t;
+	double t;
 	bool test;
 	uint32_t r,g,b;
 
@@ -149,32 +141,31 @@ void camera::traceScene(vobj* object){
 	double falloff;
 	object->updateVals();
 
-	#define ptype 1
+	//printf("%i\n",omp_get_dynamic());
+
+	#define ptype 2
 
 	#if ptype==1
-	#pragma omp parallel for private(x,y,t,test,r,g,b,v,color,xv,falloff)
+	#pragma omp parallel for private(t,test,r,g,b,v,color,xv,falloff)
 	#elif ptype==2
-	#pragma omp parallel for private(x,xv)
+	#pragma omp parallel for private(xv)
 	#endif
 	for(int i=0;i<w;i++){
 		//printf("thread id:? i=%i",i);
-		x=(2.0*i)/w-1;
-		xv=x*xvec;
+		xv=((2.0*i)/w-1)*xvec;
 		xv+=dir;
 		#if ptype==2 || ptype==3
-		#pragma omp parallel for private(y,t,test,r,g,b,v,color,falloff)
+		#pragma omp parallel for private(t,test,r,g,b,v,color,falloff) shared(xv)
 		#endif
 		for(int j=0;j<h;j++){
-			y=(2.0*(h-j-1))/h-1;
-
 			/*
 			if pos represented the origin of the camera: (pos+dir+a*xvec+b*yvec) - (pos) = dir+a*xvec+b*yvec
 			but since pos represents the screen's center: (pos+a*xvec+b*yvec) - (pos-dir) = a*xvec+b*yvec+dir
 			its interesting that both produce the same result
 			*/
 			v=xv;
-			v+=y*yvec;
-			v.normalize();
+			v+=((2.0*(h-j-1))/h-1)*yvec;
+			v.normalize();//if i never have to compare adjacent pixels, then normalizing is unnessessary, though that seems unrealistic
 			test=object->intersects(v,pos-dir,&color,&t);
 
 			//printf(("v:%f %f %f\ttest:"+string((test)?"true":"false")+"\n").c_str(),v[0],v[1],v[2]);

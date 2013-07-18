@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cstdio>
 #include <iostream>
+
 using namespace std;
 
 #if 0
@@ -61,7 +62,9 @@ bool vobj::intersects(vecref vec,double x0,double y0,double z0,uint32_t* color,d
 typedef long long llong;
 
 bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,double vx0,double vy0,double vz0,uint32_t* color,int scale,double* closeT) const{
+	//if(scale>1){printf("%i\n",scale);}
 	const double denom=pow2(-scale);//1.0/(llong(1)<<llong(scale));// 1/(2^scale)
+	/*
 	const double
 		x1=( (1-2*(v.x>=0)) *w*denom-(vx0-p.x))/v.x,
 		x2=( (2*(v.x>=0)-1) *w*denom-(vx0-p.x))/v.x,
@@ -73,6 +76,25 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,double vx0,double vy0,doubl
 	double
 		tlow=max(max(x1,y1),z1),
 		thigh=min(min(x2,y2),z2);
+	/*/
+	#define x1 ( (1-2*(v.x>=0)) *w*denom-(vx0-p.x))/v.x
+	#define x2 ( (2*(v.x>=0)-1) *w*denom-(vx0-p.x))/v.x
+	#define y1 ( (1-2*(v.y>=0)) *h*denom-(vy0-p.y))/v.y
+	#define y2 ( (2*(v.y>=0)-1) *h*denom-(vy0-p.y))/v.y
+	#define z1 ( (1-2*(v.z>=0)) *d*denom-(vz0-p.z))/v.z
+	#define z2 ( (2*(v.z>=0)-1) *d*denom-(vz0-p.z))/v.z
+
+	double
+		tlow=max(max(x1,y1),z1),
+		thigh=min(min(x2,y2),z2);
+
+	#undef x1
+	#undef x2
+	#undef y1
+	#undef y2
+	#undef z1
+	#undef z2
+	//*/
 
 	vec3d vec;
 
@@ -80,7 +102,7 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,double vx0,double vy0,doubl
 
 	if(tlow>thigh || thigh<0){//the ray does not intersect the current node or the cube is completely behind the ray
 		return false;
-	}else if(node->next==NULL){///TODO: or tlow>cutoff_distance //ray intersects and this is a leaf node
+	}else if(node->next==NULL || node->shape==0x00){///TODO: or tlow>cutoff_distance //ray intersects and this is a leaf node
 		*color=node->color;
 		*closeT=max(tlow,0.0);
 		return true;
@@ -160,7 +182,6 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,double vx0,double vy0,doubl
 			nodes>>=3;
 		}while(nodes!=0);
 	}
-	out:
 
 	#else
 	for(int i=0;i<8;i++){
@@ -190,4 +211,115 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,double vx0,double vy0,doubl
 	*color=closeCol;
 	*closeT=tlow;
 	return b;
+}
+
+void vobj::readFromFile(string filename){
+	//TODO: decide whether to check for null or make head protected
+	//TODO: i might not need the next two lines if i make a call to cleanTree
+	head->die();
+
+	printf("head dead\n");
+
+	ifstream file(filename.c_str(),ios::in|ios::binary|ios::ate);
+	if(file.is_open()){
+		ifstream::pos_type size=file.tellg();
+
+		printf("size:%u %u\n",(unsigned int)(size),(unsigned int)(file.tellg()));
+
+		char* data=new char[size];
+		file.seekg(0,ios::beg);
+		file.read(data,size);
+		file.close();
+		printf("before readin\n");
+		readin(data,size,0,head);
+		printf("after readin\n");
+		delete[] data;
+	}else{
+		printf("file not opened\n");
+		throw;
+	}
+}
+
+ifstream::pos_type vobj::readin(char* data,ifstream::pos_type size,ifstream::pos_type strpos,vnode* node){
+	uint32_t r=0,g=0,b=0;
+
+	printf("data:%p\tsize:%u\tpos:%u\tnode:%p\n",data,(unsigned int)(size),(unsigned int)(strpos),node);
+	printf("data val:%x\n",data[strpos]);
+
+	if(data[strpos]!=0x00){
+		printf("has children\n\n");
+		uint8_t n=0;
+		node->initChildren(data[strpos]);
+		strpos+=1;
+
+		if(strpos>=size){
+			throw;
+		}
+
+		for(int i=0;i<8;i++){
+			if(((node->shape)>>i)&0x01){
+				strpos=readin(data,size,strpos,&(node->next[i]));
+				r+=((node->next[i].color)>>16)&0xff;
+				g+=((node->next[i].color)>>8)&0xff;
+				b+=(node->next[i].color)&0xff;
+				++n;
+			}
+		}
+
+		r/=n;
+		g/=n;
+		b/=n;
+	}else{
+		printf("does not have children\n");
+		node->shape=0x00;
+		strpos+=1;
+
+		//i dont care if strpos==size at the end of this part, it actually should do that
+		if(2+strpos>=size){
+			throw;
+		}
+
+		r=data[strpos]&0xff;
+		strpos+=1;
+		g=data[strpos]&0xff;
+		strpos+=1;
+		b=data[strpos]&0xff;
+		strpos+=1;
+
+		printf("r:%x\ng:%x\nb:%x\ncolor:%p\n\n",r,g,b,(r<<16)|(g<<8)|b);
+	}
+
+	node->color=(r<<16)|(g<<8)|b;
+	return strpos;
+}
+
+void vobj::writeToFile(string filename){
+	queue<char> q;
+	writeout(&q,head);
+
+	queue<char>::size_type size=q.size();
+	char data[size];
+
+	for(queue<char>::size_type i=0;i<size;i++){
+		data[i]=q.front();
+		q.pop();
+	}
+
+	ofstream file(filename.c_str(),ios::out|ios::binary);
+	file.write(data,size);
+	file.close();
+}
+void vobj::writeout(queue<char>* q,vnode* node){
+	q->push(node->shape);
+	if(node->shape==0 || node->next==NULL){
+		q->push(((node->color)>>16)&0xff);
+		q->push(((node->color)>>8)&0xff);
+		q->push((node->color)&0xff);
+	}else{
+		for(int i=0;i<8;i++){
+			if(((node->shape)>>i)&0x01){
+				writeout(q,&(node->next[i]));
+			}
+		}
+	}
 }

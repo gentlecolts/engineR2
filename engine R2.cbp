@@ -65,7 +65,11 @@
 			<Add option="-pedantic" />
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
+			<Add option="-fopenmp" />
 		</Compiler>
+		<Linker>
+			<Add option="-lgomp -lpthread" />
+		</Linker>
 		<Unit filename="cam\camera.cpp" />
 		<Unit filename="cam\camera.h" />
 		<Unit filename="cam\matrix.cpp" />

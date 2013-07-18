@@ -11,13 +11,17 @@ struct vnode{
 	uint32_t color;
 	uint8_t shape;
 
-	vnode(uint32_t col=defcol);
+	vnode(uint8_t shp=0x00,uint32_t col=defcol);
 	virtual ~vnode();
 	virtual void die();
 
 	virtual void initChildren(uint8_t node_shape=0xff);
 	virtual void deleteChildren();
 	virtual void deleteChild(int i);
+
+	//TODO: combine these two functions
+	virtual uint32_t calcColors();
+	virtual void cleanTree();
 
 	/*if security becomes a concern, then make next private/protected and use these functions
 	the biggest concern being someone makes next point to an array which is not vnode[8]

@@ -94,27 +94,208 @@ int main(int argc,char** argv){
 	cout<<(c==1)<<endl;
 	//*/
 
-	vnode* node;
-	node=o2.head;
-	node->initChildren(0xfe);
-	//0000 0110
-	//node->initChildren(0x06);
+	/*
+	 shape
+	bit	zyx
+	0	+++
+	1	++-
+	2	+-+
+	3	+--
+	4	-++
+	5	-+-
+	6	--+
+	7	---
+	*/
 
-	//*
-	//node=&(node->next[1]);
-	node=&(o2.head->next[1]);
-	node->initChildren(0xff);
+	#if 0
+	char vals[]={
+		/*
+		h is head
+		,# is #th child
+		#### #### indicates which children exist
+		*///   0,1,2,3,4
+		0xff,//h			1111 1111
+		0xff,//h,0			1111 1111
+		0xfe,//h,0,0		1111 1110
+		0x00,//h,0,0,1		0000 0000
+		0xff,0xff,0xff//rgb
+		0x00,//h,0,0,2		0000 0000
+		0xff,0xff,0xff//rgb
+		0x00,//h,0,0,3		0000 0000
+		0xff,0xff,0xff//rgb
+		0x00,//h,0,0,4		0000 0000
+		0xff,0xff,0xff//rgb
+		0x00,//h,0,0,5		0000 0000
+		0xff,0xff,0xff//rgb
+		0x00,//h,0,0,6		0000 0000
+		0xff,0xff,0xff//rgb
+		0x00,//h,0,0,7		0000 0000
+		0xff,0xff,0xff//rgb
+	};
 
-	///why does this not work?
-	node==&(node->next[1]);
-	node->initChildren(0xfe);
+	o2.readFromString(vals);
+	#else
+	vnode *node0,*node1,*node2,*node3;
+	node0=o2.head;
+	node0->initChildren(0xff);
 
-	node=&(o2.head->next[2]);
-	node->initChildren(0xfe);
+	node1=&(node0->next[0]);
+	node1->initChildren(0xff);
 
-	///why does this not work?
-	node==&(node->next[1]);
-	node->initChildren(0xfe);
+	node2=&(node1->next[0]);
+	node2->initChildren(0xfe);
+	node2->next[0].color=0x00ff00;
+	node2->next[1].color=0x00ff00;
+	node2->next[2].color=0x00ff00;
+	node2->next[3].color=0x00ff00;
+	node2->next[4].color=0x00ff00;
+	node2->next[5].color=0x00ff00;
+	node2->next[6].color=0x00ff00;
+	node2->next[7].color=0x00ff00;
+
+	//inbhboiblhjbnkliuy
+	node2=&(node1->next[2]);
+	node2->initChildren(0xfb);
+	node2->next[0].color=0xff0000;
+	node2->next[1].color=0x0000ff;
+	node2->next[3].color=0xffff00;
+	node2->next[4].color=0x00ff00;
+	node2->next[5].color=0x00ffff;
+	node2->next[6].color=0xff00ff;
+	node2->next[7].color=0xffffff;
+
+	node1=&(node0->next[1]);
+	node1->initChildren(0xff);
+
+	node2=&(node1->next[1]);
+	node2->initChildren(0xfd);
+	node2->next[0].color=0x00ff00;
+	node2->next[1].color=0x00ff00;
+	node2->next[2].color=0x00ff00;
+	node2->next[3].color=0x00ff00;
+	node2->next[4].color=0x00ff00;
+	node2->next[5].color=0x00ff00;
+	node2->next[6].color=0x00ff00;
+	node2->next[7].color=0x00ff00;
+
+	node2=&(node1->next[3]);
+	node2->initChildren(0xf7);
+	node2->next[0].color=0x007f00;
+	node2->next[1].color=0x007f00;
+	node2->next[2].color=0x007f00;
+	node2->next[3].color=0x007f00;
+	node2->next[4].color=0x007f00;
+	node2->next[5].color=0x007f00;
+	node2->next[6].color=0x007f00;
+	node2->next[7].color=0x007f00;
+
+	node1=&(node0->next[4]);
+	node1->initChildren(0xff);
+
+	node2=&(node1->next[4]);
+	node2->initChildren(0xef);
+	node2->next[0].color=0x00ff00;
+	node2->next[1].color=0x00ff00;
+	node2->next[2].color=0x00ff00;
+	node2->next[3].color=0x00ff00;
+	node2->next[4].color=0x00ff00;
+	node2->next[5].color=0x00ff00;
+	node2->next[6].color=0x00ff00;
+	node2->next[7].color=0x00ff00;
+
+	node2=&(node1->next[6]);
+	node2->initChildren(0xbf);
+	node2->next[0].color=0x007f00;
+	node2->next[1].color=0x007f00;
+	node2->next[2].color=0x007f00;
+	node2->next[3].color=0x007f00;
+	node2->next[4].color=0x007f00;
+	node2->next[5].color=0x007f00;
+	node2->next[6].color=0x007f00;
+	node2->next[7].color=0x007f00;
+
+	node1=&(node0->next[5]);
+	node1->initChildren(0xff);
+
+	node2=&(node1->next[5]);
+	node2->initChildren(0xdf);
+	node2->next[0].color=0x00ff00;
+	node2->next[1].color=0x00ff00;
+	node2->next[2].color=0x00ff00;
+	node2->next[3].color=0x00ff00;
+	node2->next[4].color=0x00ff00;
+	node2->next[5].color=0x00ff00;
+	node2->next[6].color=0x00ff00;
+	node2->next[7].color=0x00ff00;
+
+	node2=&(node1->next[7]);
+	node2->initChildren(0x7f);
+	node2->next[0].color=0x007f00;
+	node2->next[1].color=0x007f00;
+	node2->next[2].color=0x007f00;
+	node2->next[3].color=0x007f00;
+	node2->next[4].color=0x007f00;
+	node2->next[5].color=0x007f00;
+	node2->next[6].color=0x007f00;
+	node2->next[7].color=0x007f00;
+
+	node1=&(node0->next[2]);
+	node1->initChildren(0xfa);
+
+	node2=&(node1->next[1]);
+	node2->initChildren(0xa0);
+	node2=&(node1->next[3]);
+	node2->initChildren(0xa0);
+	node2=&(node1->next[4]);
+	node2->initChildren(0xa0);
+	node2=&(node1->next[6]);
+	node2->initChildren(0xa0);
+
+	node1=&(node0->next[3]);
+	node1->initChildren(0xf5);
+
+	node2=&(node1->next[0]);
+	node2->initChildren(0x50);
+	node2=&(node1->next[2]);
+	node2->initChildren(0x50);
+	node2=&(node1->next[5]);
+	node2->initChildren(0x50);
+	node2=&(node1->next[7]);
+	node2->initChildren(0x50);
+
+	node1=&(node0->next[6]);
+	node1->initChildren(0xaf);
+
+	node2=&(node1->next[0]);
+	node2->initChildren(0x0a);
+	node2=&(node1->next[2]);
+	node2->initChildren(0x0a);
+	node2=&(node1->next[5]);
+	node2->initChildren(0x0a);
+	node2=&(node1->next[7]);
+	node2->initChildren(0x0a);
+
+	node1=&(node0->next[7]);
+	node1->initChildren(0x5f);
+
+	node2=&(node1->next[1]);
+	node2->initChildren(0x05);
+	node2=&(node1->next[3]);
+	node2->initChildren(0x05);
+	node2=&(node1->next[4]);
+	node2->initChildren(0x05);
+	node2=&(node1->next[6]);
+	node2->initChildren(0x05);
+	#endif
+
+	o2.head->calcColors();
+
+	printf("before write\n");
+	o2.writeToFile("obj.vox");
+	printf("after write\n");
+	vobj o(1,1,1,0,0,0);
+	o.readFromFile("obj.vox");
+	printf("after read\n");
 
 	/*
 	o2.zvec.x=0.2;
@@ -126,7 +307,7 @@ int main(int argc,char** argv){
 		SDL_FillRect(screen,&(screen->clip_rect),0x000000);
 
 		cam.lookAt(0,0,0);
-		cam.traceScene(&o2);
+		cam.traceScene(&o);
 		cam.drawLine(0,0,0,1,0,0,0xff0000);
 		cam.drawLine(0,0,0,0,1,0,0x00ff00);
 		cam.drawLine(0,0,0,0,0,1,0x0000ff);
