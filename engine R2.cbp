@@ -54,6 +54,25 @@
 					<Add option="-s" />
 				</Linker>
 			</Target>
+			<Target title="Release64">
+				<Option output="bin\Release64\engine R2" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Release64\" />
+				<Option type="0" />
+				<Option compiler="mingw64" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-fomit-frame-pointer" />
+					<Add option="-fexpensive-optimizations" />
+					<Add option="-O3" />
+					<Add option="-O2" />
+					<Add option="-O1" />
+					<Add option="-O" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-lSDLmain -lSDL" />
+				</Linker>
+			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-march=core2" />
@@ -87,6 +106,12 @@
 		<Unit filename="vox\vnode.h" />
 		<Unit filename="vox\vobj.cpp" />
 		<Unit filename="vox\vobj.h" />
+		<Unit filename="vox\vobjFileRead.cpp" />
+		<Unit filename="vox\vobjFileWrite.cpp" />
+		<Unit filename="vox\vobjReadOFF.cpp" />
+		<Unit filename="vox\vobjReadOFF.h" />
+		<Unit filename="vox\vobjReadV8l.cpp" />
+		<Unit filename="vox\vobjReadV8l.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

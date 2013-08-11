@@ -79,12 +79,13 @@
 	<cstdio>
 	<iostream>
 
-1374000870 source:c:\users\jack\desktop\programming\c++\enginer2\cam\camera.cpp
+1376164583 source:c:\users\jack\desktop\programming\c++\enginer2\cam\camera.cpp
 	<SDL/SDL.h>
 	"camera.h"
 	"../msc/functions.h"
 	<cmath>
 	<string>
+	<ctime>
 	<omp.h>
 
 1373933404 c:\users\jack\desktop\programming\c++\enginer2\cam\camera.h
@@ -93,49 +94,51 @@
 	"../msc/surface.h"
 	"../vox/vobj.h"
 
-1372789568 c:\users\jack\desktop\programming\c++\enginer2\cam\matrix.h
+1375385920 c:\users\jack\desktop\programming\c++\enginer2\cam\matrix.h
 	<exception>
 
-1373474329 c:\users\jack\desktop\programming\c++\enginer2\cam\vec3d.h
+1375385974 c:\users\jack\desktop\programming\c++\enginer2\cam\vec3d.h
 	"matrix.h"
 
 1372635695 c:\users\jack\desktop\programming\c++\enginer2\msc\surface.h
 	<SDL/SDL.h>
 
-1374110954 c:\users\jack\desktop\programming\c++\enginer2\vox\vobj.h
+1375334287 c:\users\jack\desktop\programming\c++\enginer2\vox\vobj.h
 	"vnode.h"
 	<string>
 	<fstream>
 	<queue>
 
-1374100334 c:\users\jack\desktop\programming\c++\enginer2\vox\vnode.h
+1375895317 c:\users\jack\desktop\programming\c++\enginer2\vox\vnode.h
 	<SDL/SDL.h>
 	"../cam/vec3d.h"
 
-1373484330 c:\users\jack\desktop\programming\c++\enginer2\msc\functions.h
+1374517873 c:\users\jack\desktop\programming\c++\enginer2\msc\functions.h
 	<SDL/SDL.h>
 
-1373137122 source:c:\users\jack\desktop\programming\c++\enginer2\cam\matrix.cpp
+1375386387 source:c:\users\jack\desktop\programming\c++\enginer2\cam\matrix.cpp
 	"matrix.h"
 	"vec3d.h"
 	<cmath>
 	<cstdio>
 
-1373474329 source:c:\users\jack\desktop\programming\c++\enginer2\cam\vec3d.cpp
+1375386022 source:c:\users\jack\desktop\programming\c++\enginer2\cam\vec3d.cpp
 	"vec3d.h"
 	"../msc/functions.h"
 	<cmath>
 
-1373135307 source:c:\users\jack\desktop\programming\c++\enginer2\engine.cpp
+1374443055 source:c:\users\jack\desktop\programming\c++\enginer2\engine.cpp
+	"engine.h"
 
-1374114286 source:c:\users\jack\desktop\programming\c++\enginer2\main.cpp
+1376178385 source:c:\users\jack\desktop\programming\c++\enginer2\main.cpp
 	<SDL/SDL.h>
 	"engine.h"
 	<cmath>
 	<iostream>
 	<ctime>
+	<windows.h>
 
-1373136112 c:\users\jack\desktop\programming\c++\enginer2\engine.h
+1374443076 c:\users\jack\desktop\programming\c++\enginer2\engine.h
 	"cam/camera.h"
 	"cam/matrix.h"
 	"cam/vec3d.h"
@@ -144,21 +147,80 @@
 	"vox/vnode.h"
 	"vox/vobj.h"
 
-1373496861 source:c:\users\jack\desktop\programming\c++\enginer2\msc\functions.cpp
+1374877843 source:c:\users\jack\desktop\programming\c++\enginer2\msc\functions.cpp
 	"functions.h"
 	<algorithm>
 
 1372635695 source:c:\users\jack\desktop\programming\c++\enginer2\msc\surface.cpp
 	"surface.h"
 
-1374113710 source:c:\users\jack\desktop\programming\c++\enginer2\vox\vnode.cpp
+1375385920 source:c:\users\jack\desktop\programming\c++\enginer2\vox\vnode.cpp
 	"vnode.h"
 
-1374115433 source:c:\users\jack\desktop\programming\c++\enginer2\vox\vobj.cpp
+1375893983 source:c:\users\jack\desktop\programming\c++\enginer2\vox\vobj.cpp
 	"vobj.h"
 	"../msc/functions.h"
 	<algorithm>
 	<cmath>
 	<cstdio>
 	<iostream>
+
+1375913249 source:c:\users\jack\desktop\programming\c++\enginer2\vox\vobjfileread.cpp
+	"vobj.h"
+	<cstdio>
+	"vobjReadV8l.h"
+	"vobjReadOFF.h"
+	<cmath>
+	<ctime>
+
+1375478623 source:c:\users\jack\desktop\programming\c++\enginer2\vox\vobjfilewrite.cpp
+	"vobj.h"
+	<cstdio>
+	<iostream>
+
+1376178242 source:c:\users\jack\desktop\programming\c++\enginer2\vox\vobjreadoff.cpp
+	"vobjReadOff.h"
+	"polygon.h"
+	<cstdio>
+	<iostream>
+	<sstream>
+	<cmath>
+	<omp.h>
+	<algorithm>
+	<functional>
+	<cctype>
+	<locale>
+
+1375324020 source:c:\users\jack\desktop\programming\c++\enginer2\vox\vobjreadv8l.cpp
+	"vobjReadV8l.h"
+	<cstdio>
+
+1375324020 c:\users\jack\desktop\programming\c++\enginer2\vox\vobjreadv8l.h
+	"vobj.h"
+
+1375323967 c:\users\jack\desktop\programming\c++\enginer2\vox\vobjreadoff.h
+	"vobj.h"
+
+1375330261 source:c:\users\jack\desktop\programming\c++\enginer2\msc\quaternion.cpp
+	"quaternion.h"
+
+1375332403 c:\users\jack\desktop\programming\c++\enginer2\msc\quaternion.h
+
+1375912454 source:c:\users\jack\desktop\programming\c++\enginer2\cam\quat.cpp
+	"quat.h"
+	"matrix.h"
+	"vec3d.h"
+	"../msc/functions.h"
+	<cmath>
+
+1375823685 c:\users\jack\desktop\programming\c++\enginer2\cam\quat.h
+
+1376165127 c:\users\jack\desktop\programming\c++\enginer2\vox\polygon.h
+	<stdint.h>
+
+1376178850 source:c:\users\jack\desktop\programming\c++\enginer2\vox\polygon.cpp
+	"polygon.h"
+	"vnode.h"
+	"../cam/vec3d.h"
+	<cmath>
 

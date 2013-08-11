@@ -1,46 +1,49 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
-	<ActiveTarget name="Debug" />
-	<File name="cam\camera.cpp" open="1" top="1" tabpos="7">
-		<Cursor position="1778" topLine="57" />
+	<ActiveTarget name="Release" />
+	<File name="cam\camera.cpp" open="1" top="1" tabpos="8">
+		<Cursor position="1051" topLine="16" />
 	</File>
-	<File name="cam\camera.h" open="1" top="0" tabpos="6">
-		<Cursor position="1199" topLine="0" />
+	<File name="cam\camera.h" open="1" top="0" tabpos="7">
+		<Cursor position="2334" topLine="56" />
 	</File>
-	<File name="cam\matrix.cpp" open="1" top="0" tabpos="10">
+	<File name="cam\matrix.cpp" open="0" top="0" tabpos="10">
 		<Cursor position="1432" topLine="126" />
 	</File>
-	<File name="cam\vec3d.cpp" open="1" top="0" tabpos="9">
-		<Cursor position="313" topLine="4" />
+	<File name="cam\vec3d.cpp" open="0" top="0" tabpos="9">
+		<Cursor position="2789" topLine="108" />
 	</File>
-	<File name="cam\vec3d.h" open="1" top="0" tabpos="8">
-		<Cursor position="715" topLine="25" />
+	<File name="cam\vec3d.h" open="1" top="0" tabpos="11">
+		<Cursor position="195" topLine="0" />
 	</File>
-	<File name="engine.cpp" open="0" top="0" tabpos="3">
-		<Cursor position="0" topLine="0" />
+	<File name="engine.cpp" open="1" top="0" tabpos="9">
+		<Cursor position="43" topLine="0" />
 	</File>
-	<File name="engine.h" open="0" top="0" tabpos="2">
-		<Cursor position="229" topLine="0" />
+	<File name="engine.h" open="1" top="0" tabpos="10">
+		<Cursor position="293" topLine="0" />
 	</File>
 	<File name="main.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="2896" topLine="104" />
+		<Cursor position="7954" topLine="311" />
 	</File>
-	<File name="msc\functions.cpp" open="1" top="0" tabpos="11">
-		<Cursor position="1796" topLine="74" />
+	<File name="msc\functions.cpp" open="0" top="0" tabpos="11">
+		<Cursor position="121" topLine="0" />
 	</File>
 	<File name="msc\functions.h" open="0" top="0" tabpos="0">
-		<Cursor position="316" topLine="0" />
+		<Cursor position="330" topLine="0" />
 	</File>
 	<File name="vox\vnode.cpp" open="1" top="0" tabpos="3">
-		<Cursor position="538" topLine="9" />
+		<Cursor position="252" topLine="0" />
 	</File>
 	<File name="vox\vnode.h" open="1" top="0" tabpos="2">
-		<Cursor position="270" topLine="1" />
+		<Cursor position="284" topLine="3" />
 	</File>
 	<File name="vox\vobj.cpp" open="1" top="0" tabpos="5">
-		<Cursor position="3121" topLine="108" />
+		<Cursor position="3916" topLine="127" />
 	</File>
 	<File name="vox\vobj.h" open="1" top="0" tabpos="4">
-		<Cursor position="816" topLine="0" />
+		<Cursor position="937" topLine="0" />
+	</File>
+	<File name="vox\vobjFileRead.cpp" open="1" top="0" tabpos="6">
+		<Cursor position="5533" topLine="213" />
 	</File>
 </CodeBlocks_layout_file>

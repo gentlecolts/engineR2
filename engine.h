@@ -9,4 +9,8 @@
 #include "vox/vnode.h"
 #include "vox/vobj.h"
 
+class engine{
+	///TODO
+};
+
 #endif // ENGINE_H_INCLUDED

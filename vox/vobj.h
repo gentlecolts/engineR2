@@ -10,11 +10,10 @@ typedef const vobj& vobjref;
 
 class vobj{
 protected:
-	virtual bool chkIntersect(vnode* node,vec3d p,vecref v,double vx0,double vy0,double vz0,uint32_t* color,int scale,double* closeT) const;
+	virtual bool chkIntersect(vnode* node,vec3d p,vecref p0,vecref v,vecref v0,const double& pixrad,uint32_t* color,int scale,double* closeT) const;
 	vec3d varr[6];
 	double w,h,d;
 
-	virtual std::ifstream::pos_type readin(char* data,std::ifstream::pos_type size,std::ifstream::pos_type strpos,vnode* node);
 	virtual void writeout(std::queue<char>* q,vnode* node);
 public:
 	vec3d pos,xvec,yvec,zvec;
@@ -27,8 +26,8 @@ public:
 	virtual vobjref operator =(vobjref o);
 
 	virtual void updateVals();//TODO: consider making xvec,yvec,zvec private
-	virtual bool intersects(vecref vec,vecref origin,uint32_t* color,double* closeT=NULL) const;
-	virtual bool intersects(vecref vec,double x0,double y0,double z0,uint32_t* color,double* closeT=NULL) const;
+	virtual bool intersects(vecref vec,vecref origin,const double pixrad,uint32_t* color,double* closeT=NULL) const;
+	virtual bool intersects(vecref vec,double x0,double y0,double z0,const double pixrad,uint32_t* color,double* closeT=NULL) const;
 
 	virtual void writeToFile(std::string filename);
 	virtual void readFromFile(std::string filename);

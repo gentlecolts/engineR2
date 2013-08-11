@@ -9,9 +9,11 @@ struct vnode{
 
 	vnode* next;
 	uint32_t color;
-	uint8_t shape;
+	uint32_t shape;
 
 	vnode(uint8_t shp=0x00,uint32_t col=defcol);
+	vnode(const vnode& node);
+	virtual void operator =(const vnode& node);
 	virtual ~vnode();
 	virtual void die();
 

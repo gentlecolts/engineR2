@@ -5,14 +5,14 @@ using namespace std;
 double invsqrt(double x) {
     double xhalf = x/2;
     long long i =*(long long*)&x;
-    i = 0x5fe6eb50c7b537a9l - (i>>1);
+    i = 0x5fe6eb50c7b537a9ll - (i>>1);
     x = *(double*)&i;
     x = x*(1.5 - xhalf*x*x);
 	//x = x*(1.5 - xhalf*x*x);
     return x;
 }
 
-inline double sgn(double x){
+double sgn(double x){
 	return (x>0)-(x<0);
 }
 

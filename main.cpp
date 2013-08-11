@@ -5,6 +5,13 @@
 #include <ctime>
 using namespace std;
 
+#ifdef WIN32
+#include <windows.h>
+void sleep(long millis){
+	Sleep(millis);
+}
+#endif
+
 #define xmax 640
 #define ymax 480
 
@@ -52,7 +59,7 @@ int main(int argc,char** argv){
 
 	vobj o2(1,1,1,0,0,0);
 
-	camera cam(screen,4*atan(1.0)/3,0,0,1);
+	camera cam(screen,4*atan(1.0)/3,1,1,1);
 
 	/*
 	cout<<sizeof(double)<<endl;
@@ -107,34 +114,6 @@ int main(int argc,char** argv){
 	7	---
 	*/
 
-	#if 0
-	char vals[]={
-		/*
-		h is head
-		,# is #th child
-		#### #### indicates which children exist
-		*///   0,1,2,3,4
-		0xff,//h			1111 1111
-		0xff,//h,0			1111 1111
-		0xfe,//h,0,0		1111 1110
-		0x00,//h,0,0,1		0000 0000
-		0xff,0xff,0xff//rgb
-		0x00,//h,0,0,2		0000 0000
-		0xff,0xff,0xff//rgb
-		0x00,//h,0,0,3		0000 0000
-		0xff,0xff,0xff//rgb
-		0x00,//h,0,0,4		0000 0000
-		0xff,0xff,0xff//rgb
-		0x00,//h,0,0,5		0000 0000
-		0xff,0xff,0xff//rgb
-		0x00,//h,0,0,6		0000 0000
-		0xff,0xff,0xff//rgb
-		0x00,//h,0,0,7		0000 0000
-		0xff,0xff,0xff//rgb
-	};
-
-	o2.readFromString(vals);
-	#else
 	vnode *node0,*node1,*node2,*node3;
 	node0=o2.head;
 	node0->initChildren(0xff);
@@ -153,7 +132,6 @@ int main(int argc,char** argv){
 	node2->next[6].color=0x00ff00;
 	node2->next[7].color=0x00ff00;
 
-	//inbhboiblhjbnkliuy
 	node2=&(node1->next[2]);
 	node2->initChildren(0xfb);
 	node2->next[0].color=0xff0000;
@@ -286,16 +264,30 @@ int main(int argc,char** argv){
 	node2->initChildren(0x05);
 	node2=&(node1->next[6]);
 	node2->initChildren(0x05);
-	#endif
 
 	o2.head->calcColors();
 
 	printf("before write\n");
-	o2.writeToFile("obj.vox");
+	//o2.writeToFile("data\\obj.v8l");
 	printf("after write\n");
 	vobj o(1,1,1,0,0,0);
-	o.readFromFile("obj.vox");
+	//o.readFromFile("data\\obj.v8l");
+	SDL_WM_SetCaption("loading file",NULL);
+	//o.readFromFile("data\\neptune_4Mtriangles_manifold\\803_neptune_4Mtriangles_manifold.off");
+	//o.readFromFile("data\\WTFZOMFG\\794_lagomaggiore.off");
+	//o.readFromFile("data\\Chinese_dragon\\783_Chinese_dragon.off");
+	//o.readFromFile("data\\chair.off");
+	o.readFromFile("data\\pleo\\pleo.off");
+	//o.readFromFile("data\\pleo.v8l");
 	printf("after read\n");
+
+	SDL_WM_SetCaption("writing",NULL);
+
+	cout<<"blah"<<endl;
+
+	//sleep(100);
+	//o.writeToFile("data\\chinese_dragon.v8l");
+	//o.writeToFile("data\\pleo.v8l");
 
 	/*
 	o2.zvec.x=0.2;
@@ -303,7 +295,10 @@ int main(int argc,char** argv){
 	o2.xvec.y=0.2;
 	//*/
 
+	SDL_Flip(screen);
+
 	draw:
+		SDL_WM_SetCaption("drawing",NULL);
 		SDL_FillRect(screen,&(screen->clip_rect),0x000000);
 
 		cam.lookAt(0,0,0);
@@ -316,14 +311,16 @@ int main(int argc,char** argv){
 
 		SDL_Flip(screen);
 
+		SDL_WM_SetCaption("done",NULL);
 		wait:
 			chkClose();
 			if(up|dn|lf|rt|fw|bw){
-				#define step 0.2
+				#define step 0.1
 				//cam.translate(step*(rt-lf),step*(up-dn),step*(fw-bw));
 				cam.translateOriented(step*(rt-lf),step*(up-dn),step*(fw-bw));
 				//cam.translate(step*(rt-lf),0,step*(up-dn));
 				goto draw;
 			}
-			goto wait;
+		sleep(1);
+		goto wait;
 }

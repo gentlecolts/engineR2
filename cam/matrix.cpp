@@ -79,7 +79,7 @@ matrix matrix::operator +(const matrix &m) const{
 		matrix ret(r,c);
 		for(int i=0;i<r;i++){
 			for(int j=0;j<c;j++){
-				ret(i,j)=(i,j)+m(i,j);
+				ret(i,j)=(*this)(i,j)+m(i,j);
 			}
 		}
 		return ret;
@@ -92,7 +92,7 @@ matrix matrix::operator -(const matrix &m) const{
 		matrix ret(r,c);
 		for(int i=0;i<r;i++){
 			for(int j=0;j<c;j++){
-				ret(i,j)=(i,j)-m(i,j);
+				ret(i,j)=(*this)(i,j)-m(i,j);
 			}
 		}
 		return ret;
@@ -117,11 +117,12 @@ matrix matrix::operator *(const matrix &m) const{
 			for(int j=0;j<m.c;j++){
 				sum=0;
 				for(int k=0;k<c;k++){
-					sum+=(i,k)*m(k,j);//yay operator overloading induced syntax :D
+					sum+=(*this)(i,k)*m(k,j);//yay operator overloading induced syntax :D
 				}
 				ret(i,j)=sum;
 			}
 		}
+		return ret;
 	}else{
 		throw baddim;
 	}
@@ -155,7 +156,7 @@ matrix& matrix::operator *=(const matrix &m){
 matrix& matrix::operator *=(mtype a){
 	for(int i=0;i<r;i++){
 		for(int j=0;j<c;j++){
-			(i,j)*=a;
+			(*this)(i,j)*=a;
 		}
 	}
 	return *this;
@@ -163,17 +164,17 @@ matrix& matrix::operator *=(mtype a){
 matrix& matrix::operator /=(mtype a){
 	for(int i=0;i<r;i++){
 		for(int j=0;j<c;j++){
-			(i,j)/=a;
+			(*this)(i,j)/=a;
 		}
 	}
 	return *this;
 }
 
 mtype matrix::get(int row,int col) const{
-	return (r,c);
+	return (*this)(r,c);
 }
 void matrix::set(int row,int col,mtype val){
-	(r,c)=val;
+	(*this)(row,col)=val;
 }
 
 mtype matrix::det() const{

@@ -3,7 +3,11 @@
 #include "../msc/functions.h"
 #include <cmath>
 #include <string>
+#include <ctime>
+
+#ifndef WIN64
 #include <omp.h>
+#endif
 using namespace std;
 
 //mtype identityarr[3][3]={{1,0,0},{0,1,0},{0,0,1}};
@@ -31,6 +35,7 @@ camera::camera(surface* target,double view_angle,double x0,double y0,double z0):
 	yvec(vec3d(0,1,0)),
 	pos(vec3d(x0,y0,z0)),
 	bgCol(0x000000)
+	//bgCol(0xff00ff)
 {
 	setViewangle(view_angle);//this sets dir
 
@@ -48,27 +53,23 @@ point2d camera::getCoords(double x,double y,double z,bool* visible){
 	n - plane's normal
 	v - vector in question
 	p - point on plane
-	vp - origin of v
+	v0 - origin of v
 
-	given: p dot n = 0, p=vp+t*v
+	given: p dot n = 0, p=v0+t*v
 	find t
 
-	(vp+t*v) dot n = 0
-	(vp dot n) + (t*v dot n) = 0
-	t*(v dot n) = -(vp dot n)
-	t=-(vp dot n)/(v dot n)
+	(v0+t*v) dot n = 0
+	(v0 dot n) + (t*v dot n) = 0
+	t*(v dot n) = -(v0 dot n)
+	t=-(v0 dot n)/(v dot n)
 	*/
 
-	const double t=-(dir.dot(tmp))/(dir.dot(v));
-	//const double t=-(tmp.dot(dir))/(v.dot(dir));
-	//const double t=-((-dir).dot(tmp))/((-dir).dot(v));
-	//const double t=((-dir).dot(tmp))/((-dir).dot(v));
-	//const double t=(dir.dot(tmp))/(dir.dot(v));
+	const double t=
+		-(dir.dot(tmp))/(dir.dot(v));
+		//(dir.dot(tmp))/(dir.dot(v));
 
-	//const double t=-(dir.dot(v))/(dir.dot(tmp));
-	//const double t=-((-dir).dot(v))/((-dir).dot(tmp));
-	//const double t=((-dir).dot(v))/((-dir).dot(tmp));
-	//const double t=(dir.dot(v))/(dir.dot(tmp));
+		//-(dir.dot(v))/(dir.dot(tmp));
+		//(dir.dot(v))/(dir.dot(tmp));
 	if(visible!=NULL){
 		*visible=(t>=0);
 	}
@@ -129,7 +130,8 @@ void camera::traceScene(vobj* object){
 	13, 1.0, 0.35, 0.44
 	7, 1.0, 0.7, 1.8
 	*/
-	#define expr ((0.2*t+0.22)*t+1)
+
+	long time=clock();
 
 	double t;
 	bool test;
@@ -140,95 +142,53 @@ void camera::traceScene(vobj* object){
 	vec3d xv;
 	double falloff;
 	object->updateVals();
+	vec3d tmp=pos-dir;
+	const double pixrad=min(xvec.magnitude()/w,yvec.magnitude()/h);
+
+	int rayCount=0;
+
+	#define expr ((0.2*t+0.22)*t+1)
 
 	//printf("%i\n",omp_get_dynamic());
 
-	#define ptype 2
-
-	#if ptype==1
-	#pragma omp parallel for private(t,test,r,g,b,v,color,xv,falloff)
-	#elif ptype==2
-	#pragma omp parallel for private(xv)
+	#ifndef WIN64
+	#pragma omp parallel for private(t,test,r,g,b,v,color,xv,falloff) reduction( + : rayCount )
+	for(int i=0;i<w*h;i++){
+	#else
+	for(int i=0;i<w*h;i++){
 	#endif
-	for(int i=0;i<w;i++){
-		//printf("thread id:? i=%i",i);
-		xv=((2.0*i)/w-1)*xvec;
+		xv=((2.0*(i%w))/w-1)*xvec;
 		xv+=dir;
-		#if ptype==2 || ptype==3
-		#pragma omp parallel for private(t,test,r,g,b,v,color,falloff) shared(xv)
-		#endif
-		for(int j=0;j<h;j++){
-			/*
-			if pos represented the origin of the camera: (pos+dir+a*xvec+b*yvec) - (pos) = dir+a*xvec+b*yvec
-			but since pos represents the screen's center: (pos+a*xvec+b*yvec) - (pos-dir) = a*xvec+b*yvec+dir
-			its interesting that both produce the same result
-			*/
-			v=xv;
-			v+=((2.0*(h-j-1))/h-1)*yvec;
-			v.normalize();//if i never have to compare adjacent pixels, then normalizing is unnessessary, though that seems unrealistic
-			test=object->intersects(v,pos-dir,&color,&t);
+		v=xv;
+		v+=((2.0*(h-(i/w)-1))/h-1)*yvec;
 
-			//printf(("v:%f %f %f\ttest:"+string((test)?"true":"false")+"\n").c_str(),v[0],v[1],v[2]);
+		v.normalize();//if i never have to compare adjacent pixels, then normalizing is unnessessary, though that seems unrealistic
+		test=object->intersects(v,tmp,pixrad,&color,&t);
+		//test=object->intersects(dir,tmp,&color,&t);//orthagonal
 
-			falloff=1.0/expr;
-			r=((color>>16)&0xff)*falloff;
-			g=((color>>8)&0xff)*falloff;
-			b=(color&0xff)*falloff;
-			//*/
+		rayCount+=test;
 
-			pixels[i+w*j]=test*((0xff<<24)|(r<<16)|(g<<8)|b)+(!test)*bgCol;
-			//depthbuf[i+w*j]=t;
-		}
+		//printf(("v:%f %f %f\ttest:"+string((test)?"true":"false")+"\n").c_str(),v[0],v[1],v[2]);
+
+		falloff=1.0/expr;
+		r=((color>>16)&0xff)*falloff;
+		g=((color>>8)&0xff)*falloff;
+		b=(color&0xff)*falloff;
+		//*/
+
+		//pixels[i]=test*((0xff<<24)|(r<<16)|(g<<8)|b)+(!test)*bgCol;
+		pixels[i]=test*((0xff<<24)|(r<<16)|(g<<8)|b)+(1-test)*bgCol;
 	}
+
+	t=clock()-t;
+
+	printf("number of rays that hit: %i\ttime: %lld",rayCount,t/CLOCKS_PER_SEC);
 
 	#undef w
 	#undef h
 	#undef expr
 }
 void camera::traceScene(int numobj,vobj object[]){
-	#define w (scrn->w)
-	#define h (scrn->h)
-
-	double x,y,t;
-	bool test;
-	uint32_t r,g,b;
-	#define expr (0.25*t*t+1)
-	vec3d v;
-	uint32_t color;
-
-	for(int i=0;i<w;i++){
-		for(int j=0;j<h;j++){
-			depthbuf[i+w*j]=INFINITY;
-
-			x=(2.0*i)/w-1;
-			y=(2.0*(h-j-1))/h-1;
-
-			/*
-			if pos represented the origin of the camera: (pos+dir+a*xvec+b*yvec) - (pos) = dir+a*xvec+b*yvec
-			but since pos represents the screen's center: (pos+a*xvec+b*yvec) - (pos-dir) = a*xvec+b*yvec+dir
-			its interesting that both produce the same result
-			*/
-			v=x*xvec+y*yvec+dir;
-			v.normalize();
-
-			for(int k=0;k<numobj;k++){
-				test=object[k].intersects(v,pos-dir,&color,&t);
-
-				depthbuf[i+w*j]=(test && abs(t)<depthbuf[i+w*j])*abs(t)+(!(test && abs(t)<depthbuf[i+w*j]))*depthbuf[i+w*j];
-				//printf(("v:%f %f %f\ttest:"+string((test)?"true":"false")+"\n").c_str(),v[0],v[1],v[2]);
-
-				r=128/expr;
-				g=128/expr;
-				b=128/expr;
-
-				pixels[i+w*j]=(abs(t)<depthbuf[i+w*j])*(test*((0xff<<24)|(r<<16)|(g<<8)|b)+(!test)*bgCol)+(!(abs(t)<depthbuf[i+w*j]))*pixels[i+w*j];
-			}
-		}
-	}
-
-	#undef w
-	#undef h
-	#undef expr
 }
 
 void camera::setViewangle(double angle){
@@ -256,6 +216,7 @@ void camera::setCamWidth(double wid){
 
 void camera::lookAt(double x,double y,double z){
 	dir=vec3d(x-pos.x,y-pos.y,z-pos.z).getNormalized();
+	//vec3d v(x-pos.x,y-pos.y,z-pos.z);
 
 	/*
 	YxZ = X
@@ -286,6 +247,7 @@ void camera::lookAt(double x,double y,double z){
 	[	?	?	z-pos.z	]
 	*/
 
+	//*
 	//yvec=R*vec3d(0,1,0);
 	yvec=vec3d(0,1,0);
 	xvec=yvec.cross(dir);
@@ -296,6 +258,17 @@ void camera::lookAt(double x,double y,double z){
 	xvec*=width/2;
 	yvec*=aspctRatio*width/2;
 	dir*=focusLen;
+	/*/
+	///doesnt work
+	double incl,incl2,azm,azm2;
+	dir.getAngles(&incl,&azm);
+	v.getAngles(&incl2,&azm2);
+	addToAngles(incl2-incl,azm2-azm);
+	xvec.normalize();
+	xvec*=width/2;
+	yvec.normalize();
+	yvec*=aspctRatio*width/2;
+	//*/
 }
 void camera::lookInDir(vec3d& v){
 	dir=v;
@@ -494,15 +467,16 @@ void camera::setAngles(double incl,double azim,double tlt){
 
 void camera::addToAngles(double incl,double azim){
 	const double ci=cos(incl),si=sin(incl),ca=cos(azim),sa=sin(azim),r=invsqrt(dir.x*dir.x+dir.y*dir.y);
-	vec3d v((dir.x*ca-dir.z*sa)*(ci-dir.y*r*si),dir.y*ci+si/r,(dir.z*ca+dir.x*sa)*(ci-dir.y*r*si));
-	lookInDir(v);
+	dir=vec3d((dir.x*ca-dir.z*sa)*(ci-dir.y*r*si),dir.y*ci+si/r,(dir.z*ca+dir.x*sa)*(ci-dir.y*r*si));
+	xvec=vec3d((xvec.x*ca-xvec.z*sa)*(ci-xvec.y*r*si),xvec.y*ci+si/r,(xvec.z*ca+xvec.x*sa)*(ci-xvec.y*r*si));
+	yvec=vec3d((yvec.x*ca-yvec.z*sa)*(ci-yvec.y*r*si),yvec.y*ci+si/r,(yvec.z*ca+yvec.x*sa)*(ci-yvec.y*r*si));
 }
 void camera::addToAngles(double incl,double azim,double tlt){
 	addToAngles(incl,azim);
 	setTilt(tilt+tlt);
 }
 
-///I WILL NOT BE STORING INCLINE OR AZIMUTH, THESE SHOULD BE CALCULATED ALONG WITH THE SET FUNCTIONS
+///I WILL NOT BE STORING INCLINE OR AZIMUTH, THESE SHOULD BE CALCULATED
 double camera::getIncline(){}
 double camera::getAzimuth(){}
 double camera::getTilt(){return tilt;}

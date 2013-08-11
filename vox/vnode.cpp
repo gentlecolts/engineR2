@@ -3,6 +3,30 @@
 uint32_t vnode::defcol=0xffffff;
 
 vnode::vnode(uint8_t shp,uint32_t col):next(NULL),color(col),shape(shp){}
+
+vnode::vnode(const vnode& node){
+	shape=node.shape;
+	if(node.next!=NULL){
+		if(next==NULL){
+			next=new vnode[8];
+		}
+		for(int i=0;i<8;i++){
+			next[i]=node.next[i];
+		}
+	}
+}
+void vnode::operator =(const vnode& node){
+	shape=node.shape;
+	if(node.next!=NULL){
+		if(next==NULL){
+			next=new vnode[8];
+		}
+		for(int i=0;i<8;i++){
+			next[i]=node.next[i];
+		}
+	}
+}
+
 vnode::~vnode(){
 	die();
 }
@@ -71,7 +95,7 @@ uint32_t vnode::calcColors(){
 	return color;
 }
 void vnode::cleanTree(){
-	if(shape=0x00){
+	if(shape==0x00){
 		die();
 	}else if(next!=NULL){
 		next[0].cleanTree();

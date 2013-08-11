@@ -19,21 +19,23 @@ vec3d vec3d::operator -(vecref v) const{
 	return vec3d(x-v.x,y-v.y,z-v.z);
 }
 
-vec3d vec3d::operator +=(vecref v){
+vecref vec3d::operator +=(vecref v){
 	x+=v.x;
 	y+=v.y;
 	z+=v.z;
+	return this;
 }
-vec3d vec3d::operator -=(vecref v){
+vecref vec3d::operator -=(vecref v){
 	x-=v.x;
 	y-=v.y;
 	z-=v.z;
+	return this;
 }
 
-mtype vec3d::dot(vecref v){
+mtype vec3d::dot(vecref v) const{
 	return x*v.x+y*v.y+z*v.z;
 }
-vec3d vec3d::cross(vecref v){
+vec3d vec3d::cross(vecref v) const{
 	return vec3d(y*v.z-z*v.y,z*v.x-x*v.z,x*v.y-y*v.x);
 }
 
@@ -58,21 +60,21 @@ void vec3d::normalize(){
 	y*=d;
 	z*=d;
 }
-vec3d vec3d::getNormalized(){
+vec3d vec3d::getNormalized() const{
 	return invsqrt(this)*(*this);
 }
 
-mtype vec3d::magnitude(){
+mtype vec3d::magnitude() const{
 	//return sqrt(x*x+y*y+z*z);
 	return 1/invsqrt(x*x+y*y+z*z);
 }
-mtype vec3d::magSqr(){
+mtype vec3d::magSqr() const{
 	return x*x+y*y+z*z;
 }
-mtype vec3d::invMagnitude(){
+mtype vec3d::invMagnitude() const{
 	return invsqrt(x*x+y*y+z*z);
 }
-mtype vec3d::invMagSqr(){
+mtype vec3d::invMagSqr() const{
 	return 1/(x*x+y*y+z*z);
 }
 
@@ -96,15 +98,17 @@ vec3d vec3d::operator /(mtype a) const{
 	return vec3d(x/a,y/a,z/a);
 }
 
-vec3d vec3d::operator *=(mtype a){
+vecref vec3d::operator *=(mtype a){
 	x*=a;
 	y*=a;
 	z*=a;
+	return this;
 }
-vec3d vec3d::operator /=(mtype a){
+vecref vec3d::operator /=(mtype a){
 	x/=a;
 	y/=a;
 	z/=a;
+	return this;
 }
 vec3d vec3d::operator -() const{
 	return vec3d(-x,-y,-z);
@@ -117,6 +121,17 @@ vec3d::operator matrix() const{
 
 vec3d operator *(mtype a,vecref v){
 	return vec3d(a*v.x,a*v.y,a*v.z);
+}
+
+double vec3d::getIncl() const{
+	return asin(y*invMagnitude());
+}
+double vec3d::getAzm() const{
+	return atan2(z,x);
+}
+void vec3d::getAngles(double* incl,double* azm) const{
+	*incl=asin(y*invMagnitude());
+	*azm=atan2(z,x);
 }
 
 badDimErr vecbaddim;
