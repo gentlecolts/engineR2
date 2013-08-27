@@ -112,6 +112,12 @@ void quat::normalize(){
 	d*=q;
 }
 
+vec3d quat::operator *(vecref v) const{
+	quat q(0,v.x,v.y,v.z);
+	q=(*this)*q*conj();
+	return vec3d(q.b,q.c,q.d);
+}
+
 quat::operator matrix() const{
 	double tmp[9]={
 		a*a+b*b-c*c-d*d,2*(b*c-a*d),2*(b*d+a*c),

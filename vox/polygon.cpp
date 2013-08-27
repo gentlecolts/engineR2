@@ -2,6 +2,7 @@
 #include "vnode.h"
 #include "../cam/vec3d.h"
 #include <cmath>
+#include <algorithm>
 using namespace std;
 
 inline bool vertBoxIntersect(const vert& ply,vecref pos,const double& gridsize,const double scale){
@@ -38,8 +39,11 @@ inline bool triBoxIntersect(const poly& ply,vecref pos,const double scale){
 	#endif
 
 	#if smooth
-	vec3d p0,p,v1,v2;
+	vec3d p0,p,p2,v1,v2;
 	double t;
+
+	double tlow,thigh;
+
 	for(int i=0;i<ply.numvert;i++){
 		p0=*(ply.verts[(i+1)%(ply.numvert)]);
 		v1=(vec3d)(*(ply.verts[i]));
@@ -60,6 +64,7 @@ inline bool triBoxIntersect(const poly& ply,vecref pos,const double scale){
 
 		for(int j=0;j<3;j++){
 			for(int k=-1;k<=1;k+=2){
+#if 0
 				t=(k*scale+pos.xyz[j]-p0.xyz[j])/v1.xyz[j];
 				if(t>1 || t<0){
 					goto next;
@@ -93,7 +98,68 @@ inline bool triBoxIntersect(const poly& ply,vecref pos,const double scale){
 				if(b==0){
 					return true;
 				}
+#else
+				t=(k*scale+pos.xyz[j]-p0.xyz[j])/v1.xyz[j];
+				if(t>1 || t<0){
+					goto next;
+				}
+				p=v1;
+				p*=t;
+				p+=p0;
 
+				t=(k*scale+pos.xyz[j]-p0.xyz[j])/v2.xyz[j];
+				if(t>1 || t<0){
+					goto next;
+				}
+				p2=v2;
+				p2*=t;
+				p2+=p0;
+				p2-=p;
+
+	#if 0
+				#define tol1 (1e-3)
+
+				#define x1 ( (1-2*(p2.x>=0)) *(scale+tol1)-(p.x-pos.x))/p2.x
+				#define x2 ( (2*(p2.x>=0)-1) *(scale+tol1)-(p.x-pos.x))/p2.x
+				#define y1 ( (1-2*(p2.y>=0)) *(scale+tol1)-(p.y-pos.y))/p2.y
+				#define y2 ( (2*(p2.y>=0)-1) *(scale+tol1)-(p.y-pos.y))/p2.y
+				#define z1 ( (1-2*(p2.z>=0)) *(scale+tol1)-(p.z-pos.z))/p2.z
+				#define z2 ( (2*(p2.z>=0)-1) *(scale+tol1)-(p.z-pos.z))/p2.z
+
+				tlow=max(max(x1,y1),z1);
+				thigh=min(min(x2,y2),z2);
+
+				if(tlow<=thigh && tlow>=0 && tlow<=1){
+					return true;
+				}
+				#undef x1
+				#undef x2
+				#undef y1
+				#undef y2
+				#undef z1
+				#undef z2
+	#else
+				#define tol1 (0)
+				#define tol2 (1e-8)
+				#define a1 ( (1-2*(p2.xyz[(j+1)%3]>=0)) *(scale+tol1)-(p.xyz[(j+1)%3]-pos.xyz[(j+1)%3]))/p2.xyz[(j+1)%3]
+				#define a2 ( (2*(p2.xyz[(j+1)%3]>=0)-1) *(scale+tol1)-(p.xyz[(j+1)%3]-pos.xyz[(j+1)%3]))/p2.xyz[(j+1)%3]
+				#define b1 ( (1-2*(p2.xyz[(j+2)%3]>=0)) *(scale+tol1)-(p.xyz[(j+2)%3]-pos.xyz[(j+2)%3]))/p2.xyz[(j+2)%3]
+				#define b2 ( (2*(p2.xyz[(j+2)%3]>=0)-1) *(scale+tol1)-(p.xyz[(j+2)%3]-pos.xyz[(j+2)%3]))/p2.xyz[(j+2)%3]
+				tlow=max(a1,b1);
+				thigh=min(a2,b2);
+
+				if(tlow<=thigh && tlow>=0-tol2 && tlow<=1+tol2){
+				//if(tlow<=thigh && abs(tlow)<=1+tol){
+					return true;
+				}
+				#undef x1
+				#undef x2
+				#undef y1
+				#undef y2
+				#undef z1
+				#undef z2
+	#endif
+#endif
 				next:
 				;
 			}

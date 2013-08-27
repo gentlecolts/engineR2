@@ -174,6 +174,20 @@ void readFromOFF(char* data,pos_t size,pos_t strpos,vnode* head){
 			tri.verts[j]=&(verts[atoi(line.substr(start,pos-start).c_str())]);
 		}
 
+		colnum=0;
+		rgba[3]=0xff;//make the alpha ff if alpha is unused
+		while(pos+1<line.size() && line.find(' ',pos+1)>0 && colnum<4){
+			start=pos+1;
+			pos=line.find(' ',start);
+
+			rgba[colnum]=atoi(line.substr(start,pos-start).c_str())&0xff;
+			++colnum;
+		}
+
+		tri.hascolor=colnum>2;
+		tri.color=(rgba[3]<<24)|(rgba[0]<<16)|(rgba[1]<<8)|rgba[2];
+
+
 		//find the triangle's spot in the grid
 		tri.placePoly(head,v,1,maxdepth,0.5);
 		delete[] tri.verts;

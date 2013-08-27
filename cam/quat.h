@@ -44,6 +44,8 @@ struct quat{
 	quat getNormalized() const;
 	void normalize();
 
+	vec3d operator *(vecref v) const;
+
 	operator matrix() const;
 };
 

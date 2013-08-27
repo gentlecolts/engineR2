@@ -79,13 +79,14 @@
 	<cstdio>
 	<iostream>
 
-1376164583 source:c:\users\jack\desktop\programming\c++\enginer2\cam\camera.cpp
+1376356321 source:c:\users\jack\desktop\programming\c++\enginer2\cam\camera.cpp
 	<SDL/SDL.h>
 	"camera.h"
 	"../msc/functions.h"
 	<cmath>
 	<string>
 	<ctime>
+	<iostream>
 	<omp.h>
 
 1373933404 c:\users\jack\desktop\programming\c++\enginer2\cam\camera.h
@@ -130,7 +131,7 @@
 1374443055 source:c:\users\jack\desktop\programming\c++\enginer2\engine.cpp
 	"engine.h"
 
-1376178385 source:c:\users\jack\desktop\programming\c++\enginer2\main.cpp
+1376704887 source:c:\users\jack\desktop\programming\c++\enginer2\main.cpp
 	<SDL/SDL.h>
 	"engine.h"
 	<cmath>
@@ -157,7 +158,7 @@
 1375385920 source:c:\users\jack\desktop\programming\c++\enginer2\vox\vnode.cpp
 	"vnode.h"
 
-1375893983 source:c:\users\jack\desktop\programming\c++\enginer2\vox\vobj.cpp
+1376699521 source:c:\users\jack\desktop\programming\c++\enginer2\vox\vobj.cpp
 	"vobj.h"
 	"../msc/functions.h"
 	<algorithm>
@@ -173,12 +174,12 @@
 	<cmath>
 	<ctime>
 
-1375478623 source:c:\users\jack\desktop\programming\c++\enginer2\vox\vobjfilewrite.cpp
+1376498264 source:c:\users\jack\desktop\programming\c++\enginer2\vox\vobjfilewrite.cpp
 	"vobj.h"
 	<cstdio>
 	<iostream>
 
-1376178242 source:c:\users\jack\desktop\programming\c++\enginer2\vox\vobjreadoff.cpp
+1376355747 source:c:\users\jack\desktop\programming\c++\enginer2\vox\vobjreadoff.cpp
 	"vobjReadOff.h"
 	"polygon.h"
 	<cstdio>
@@ -206,21 +207,22 @@
 
 1375332403 c:\users\jack\desktop\programming\c++\enginer2\msc\quaternion.h
 
-1375912454 source:c:\users\jack\desktop\programming\c++\enginer2\cam\quat.cpp
+1376355604 source:c:\users\jack\desktop\programming\c++\enginer2\cam\quat.cpp
 	"quat.h"
 	"matrix.h"
 	"vec3d.h"
 	"../msc/functions.h"
 	<cmath>
 
-1375823685 c:\users\jack\desktop\programming\c++\enginer2\cam\quat.h
+1376355614 c:\users\jack\desktop\programming\c++\enginer2\cam\quat.h
 
 1376165127 c:\users\jack\desktop\programming\c++\enginer2\vox\polygon.h
 	<stdint.h>
 
-1376178850 source:c:\users\jack\desktop\programming\c++\enginer2\vox\polygon.cpp
+1376707952 source:c:\users\jack\desktop\programming\c++\enginer2\vox\polygon.cpp
 	"polygon.h"
 	"vnode.h"
 	"../cam/vec3d.h"
 	<cmath>
+	<algorithm>
 

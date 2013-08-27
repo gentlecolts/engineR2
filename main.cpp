@@ -270,7 +270,7 @@ int main(int argc,char** argv){
 	printf("before write\n");
 	//o2.writeToFile("data\\obj.v8l");
 	printf("after write\n");
-	vobj o(1,1,1,0,0,0);
+	vobj o(2,2,2,0,0,0);
 	//o.readFromFile("data\\obj.v8l");
 	SDL_WM_SetCaption("loading file",NULL);
 	//o.readFromFile("data\\neptune_4Mtriangles_manifold\\803_neptune_4Mtriangles_manifold.off");

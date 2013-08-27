@@ -4,6 +4,7 @@
 #include <cmath>
 #include <string>
 #include <ctime>
+#include <iostream>
 
 #ifndef WIN64
 #include <omp.h>
@@ -108,6 +109,8 @@ void camera::drawLine(double x0,double y0,double z0,double x1,double y1,double z
 	plotline(scrn,(scrn->w)*((p0.x+1)/2),(scrn->h)*(1-(p0.y+1)/2)-1,(scrn->w)*((p1.x+1)/2),(scrn->h)*(1-(p1.y+1)/2)-1,color);
 }
 
+#define logtime 0
+
 void camera::traceScene(vobj* object){
 	if(object==NULL){
 		return;
@@ -131,7 +134,9 @@ void camera::traceScene(vobj* object){
 	7, 1.0, 0.7, 1.8
 	*/
 
-	long time=clock();
+	#if logtime
+	long long time=clock();
+	#endif
 
 	double t;
 	bool test;
@@ -180,9 +185,12 @@ void camera::traceScene(vobj* object){
 		pixels[i]=test*((0xff<<24)|(r<<16)|(g<<8)|b)+(1-test)*bgCol;
 	}
 
-	t=clock()-t;
+	#if logtime
+	time=clock()-time;
 
-	printf("number of rays that hit: %i\ttime: %lld",rayCount,t/CLOCKS_PER_SEC);
+	printf("number of rays that hit: %i\ttime: %lli\tseconds: %llf\n",rayCount,time,double(time)/CLOCKS_PER_SEC);
+	//cout<<"number of rays that hit: "<<rayCount<<"\ttime: "<<time<<"\tseconds: "<<time/CLOCKS_PER_SEC<<endl;
+	#endif
 
 	#undef w
 	#undef h

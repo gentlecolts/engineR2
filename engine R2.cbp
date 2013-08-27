@@ -93,6 +93,8 @@
 		<Unit filename="cam\camera.h" />
 		<Unit filename="cam\matrix.cpp" />
 		<Unit filename="cam\matrix.h" />
+		<Unit filename="cam\quat.cpp" />
+		<Unit filename="cam\quat.h" />
 		<Unit filename="cam\vec3d.cpp" />
 		<Unit filename="cam\vec3d.h" />
 		<Unit filename="engine.cpp" />
@@ -102,6 +104,8 @@
 		<Unit filename="msc\functions.h" />
 		<Unit filename="msc\surface.cpp" />
 		<Unit filename="msc\surface.h" />
+		<Unit filename="vox\polygon.cpp" />
+		<Unit filename="vox\polygon.h" />
 		<Unit filename="vox\vnode.cpp" />
 		<Unit filename="vox\vnode.h" />
 		<Unit filename="vox\vobj.cpp" />

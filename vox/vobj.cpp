@@ -73,6 +73,144 @@ bool vobj::intersects(vecref vec,double x0,double y0,double z0,const double pixr
 
 typedef long long llong;
 
+inline bool testRayCube(vecref p,vecref v,vecref v0,const double w,const double h,const double d,double& tlowRet,double& thighRet){
+	#define x1 ( (1-2*(v.x>=0)) *w-(v0.x-p.x))/v.x
+	#define x2 ( (2*(v.x>=0)-1) *w-(v0.x-p.x))/v.x
+	#define y1 ( (1-2*(v.y>=0)) *h-(v0.y-p.y))/v.y
+	#define y2 ( (2*(v.y>=0)-1) *h-(v0.y-p.y))/v.y
+	#define z1 ( (1-2*(v.z>=0)) *d-(v0.z-p.z))/v.z
+	#define z2 ( (2*(v.z>=0)-1) *d-(v0.z-p.z))/v.z
+
+	const double
+		tlow=max(max(x1,y1),z1),
+		thigh=min(min(x2,y2),z2);
+
+	#undef x1
+	#undef x2
+	#undef y1
+	#undef y2
+	#undef z1
+	#undef z2
+
+	tlowRet=tlow;
+	thighRet=tlow;
+
+	return thigh>=tlow;
+}
+
+#if 0
+bool vobj::chkIntersect(vnode* node,vec3d p,vecref p0,vecref v,vecref v0,const double& pixrad,uint32_t* color,int scale,double* closeT) const{
+	vec3d vec;
+	double tlow,thigh;
+	double denom=0.5;
+	int iclose;
+
+	bool b=false;
+	double tmp;
+	uint32_t closeCol,tmpcol;
+
+	double tmin=INFINITY;
+
+	++scale;
+
+	if(!(node->next)){
+		if(testRayCube(p,v,v0,tlow,thigh)){
+			*color=node->color;
+			*closeT=max(tlow,0.0);
+			return true;
+		}
+		return false;
+	}
+
+	while(true){
+		b=false;
+		denom/=2;
+
+		///find which node is clo
+		//i think this one is faster, need more testing to determine if it truely is or not
+		uint32_t n=0;
+		uint32_t nodes=0x00000000;
+
+		#define blarg(i) \
+		nodes|=(i*(((node->shape)>>i)&0x1))<<n;\
+		n+=(((node->shape)>>i)&0x1)*3;
+
+		blarg(0);blarg(1);blarg(2);blarg(3);
+		blarg(4);blarg(5);blarg(6);blarg(7);
+		//printf("%p\t%p\n",node->shape,nodes);
+
+		#undef blarg
+
+		//count the number of visible children nodes
+		//01010101=0x55	00110011=0x33	00001111=0x0f
+		n=((node->shape)&0x55)+(((node->shape)>>1)&0x55);
+		n=(n&0x33)+((n>>2)&0x33);
+		n=(n&0x0f)+((n>>4)&0x0f);
+
+		int i=0;
+
+		if(n>0){
+			do{
+				i=nodes&0x7;
+				vec=varr[i&0x1];
+				vec+=varr[2+((i>>1)&0x1)];
+				vec+=varr[4+((i>>2)&0x1)];
+				vec*=denom/2;
+				vec+=p;
+
+				if(testRayCube(vec,v,v0,w*denom,h*denom,d*denom,tlow,thigh))){
+					b=true;
+
+					iclose=(tmp<tlow)*tmpcol+(!(tmp<tlow))*closeCol;
+					closeCol=(tmp<tlow)*tmpcol+(!(tmp<tlow))*closeCol;
+					tmp=min(tmin,tmp);
+				}
+				nodes>>=3;
+			}while(nodes!=0);
+		}
+
+	//if(tlow<=thigh){printf("%f %f\t",tlow,thigh);}
+
+	///TODO: storing normals might be best
+	#define norm_light 0
+
+	while(true){
+	tlow=max(tlow,0.0);
+
+	//note that if thigh<0 implies tlow<0, if tlow<0 then tlow=0 because of the above, so this will include the check of thigh<0
+	if(tlow>thigh){//the ray does not intersect the current node or the cube is completely behind the ray
+		*closeT=-1;
+		return false;
+	}else if(node->next==NULL || node->shape==0x00 || pixrad*tlow*pixrad*tlow>w*w+h*h+d*d){///TODO: have a maxdepth //ray intersects and this is a leaf node
+		*closeT=tlow;//max(tlow,0.0);
+		#if norm_light==0
+		*color=node->color;
+		#else
+		uint32_t r,g,b;
+		//vec=vec3d((*closeT)*v.x+v0.x-p.x,(*closeT)*v.y+v0.y-p.y,(*closeT)*v.z+v0.z-p.z);
+		//vec=vec3d((*closeT)*v.x+v0.x,(*closeT)*v.y+v0.y,(*closeT)*v.z+v0.z);
+		vec=vec3d((*closeT)*v.x+v0.x-p0.x,(*closeT)*v.y+v0.y-p0.y,(*closeT)*v.z+v0.z-p0.z);
+
+		const double x=abs(vec.x),y=abs(vec.y),z=abs(vec.z);
+		float dot=abs(v.xyz[(y>x && y>z)+2*(z>x && z>y)]);
+
+		r=(((node->color)>>16)&0xff)*dot;
+		g=(((node->color)>>8)&0xff)*dot;
+		b=((node->color)&0xff)*dot;
+		*color=(r<<16)|(g<<8)|b;
+		#endif
+		return true;
+	}
+
+	//it intersects the current node, but the node is not a leaf node
+
+
+
+	*color=closeCol;
+	*closeT=tlow;
+	return b;
+}
+#else
 bool vobj::chkIntersect(vnode* node,vec3d p,vecref p0,vecref v,vecref v0,const double& pixrad,uint32_t* color,int scale,double* closeT) const{
 	//if(scale>1){printf("%i\n",scale);}
 	const double denom=pow2(-scale);//1.0/(llong(1)<<llong(scale));// 1/(2^scale)
@@ -263,7 +401,7 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref p0,vecref v,vecref v0,const d
 	*closeT=tlow;
 	return b;
 }
-
+#endif
 
 
 
