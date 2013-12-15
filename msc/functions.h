@@ -10,6 +10,6 @@ void plotlineWithDepth(SDL_Surface* target,double* depth,int x0,int y0,double d0
 
 double sgn(double x);
 
-double pow2(int x);
+double pow2(long long x);
 
 #endif // FUNCTIONS_H_INCLUDED

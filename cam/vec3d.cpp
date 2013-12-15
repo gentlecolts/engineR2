@@ -102,13 +102,13 @@ vecref vec3d::operator *=(mtype a){
 	x*=a;
 	y*=a;
 	z*=a;
-	return this;
+	return *this;
 }
 vecref vec3d::operator /=(mtype a){
 	x/=a;
 	y/=a;
 	z/=a;
-	return this;
+	return *this;
 }
 vec3d vec3d::operator -() const{
 	return vec3d(-x,-y,-z);

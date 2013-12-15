@@ -7,8 +7,8 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin\Debug\engine R2" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj\Debug\" />
+				<Option output="bin/Debug/engine R2" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -20,8 +20,8 @@
 				</Linker>
 			</Target>
 			<Target title="Debug-Optimize">
-				<Option output="bin\Debug-Optimize\engine R2" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj\Debug-Optimize\" />
+				<Option output="bin/Debug-Optimize/engine R2" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug-Optimize/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -38,8 +38,8 @@
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="bin\Release\engine R2" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj\Release\" />
+				<Option output="bin/Release/engine R2" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -55,8 +55,8 @@
 				</Linker>
 			</Target>
 			<Target title="Release64">
-				<Option output="bin\Release64\engine R2" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj\Release64\" />
+				<Option output="bin/Release64/engine R2" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release64/" />
 				<Option type="0" />
 				<Option compiler="mingw64" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -81,41 +81,41 @@
 			<Add option="-Wredundant-decls" />
 			<Add option="-Wundef" />
 			<Add option="-Winline" />
-			<Add option="-pedantic" />
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
 			<Add option="-fopenmp" />
 		</Compiler>
 		<Linker>
+			<Add option="-lmingw32 -lsdlmain -lsdl" />
 			<Add option="-lgomp -lpthread" />
 		</Linker>
-		<Unit filename="cam\camera.cpp" />
-		<Unit filename="cam\camera.h" />
-		<Unit filename="cam\matrix.cpp" />
-		<Unit filename="cam\matrix.h" />
-		<Unit filename="cam\quat.cpp" />
-		<Unit filename="cam\quat.h" />
-		<Unit filename="cam\vec3d.cpp" />
-		<Unit filename="cam\vec3d.h" />
+		<Unit filename="cam/camera.cpp" />
+		<Unit filename="cam/camera.h" />
+		<Unit filename="cam/matrix.cpp" />
+		<Unit filename="cam/matrix.h" />
+		<Unit filename="cam/quat.cpp" />
+		<Unit filename="cam/quat.h" />
+		<Unit filename="cam/vec3d.cpp" />
+		<Unit filename="cam/vec3d.h" />
 		<Unit filename="engine.cpp" />
 		<Unit filename="engine.h" />
 		<Unit filename="main.cpp" />
-		<Unit filename="msc\functions.cpp" />
-		<Unit filename="msc\functions.h" />
-		<Unit filename="msc\surface.cpp" />
-		<Unit filename="msc\surface.h" />
-		<Unit filename="vox\polygon.cpp" />
-		<Unit filename="vox\polygon.h" />
-		<Unit filename="vox\vnode.cpp" />
-		<Unit filename="vox\vnode.h" />
-		<Unit filename="vox\vobj.cpp" />
-		<Unit filename="vox\vobj.h" />
-		<Unit filename="vox\vobjFileRead.cpp" />
-		<Unit filename="vox\vobjFileWrite.cpp" />
-		<Unit filename="vox\vobjReadOFF.cpp" />
-		<Unit filename="vox\vobjReadOFF.h" />
-		<Unit filename="vox\vobjReadV8l.cpp" />
-		<Unit filename="vox\vobjReadV8l.h" />
+		<Unit filename="msc/functions.cpp" />
+		<Unit filename="msc/functions.h" />
+		<Unit filename="msc/surface.cpp" />
+		<Unit filename="msc/surface.h" />
+		<Unit filename="vox/polygon.cpp" />
+		<Unit filename="vox/polygon.h" />
+		<Unit filename="vox/vnode.cpp" />
+		<Unit filename="vox/vnode.h" />
+		<Unit filename="vox/vobj.cpp" />
+		<Unit filename="vox/vobj.h" />
+		<Unit filename="vox/vobjFileRead.cpp" />
+		<Unit filename="vox/vobjFileWrite.cpp" />
+		<Unit filename="vox/vobjReadOFF.cpp" />
+		<Unit filename="vox/vobjReadOFF.h" />
+		<Unit filename="vox/vobjReadV8l.cpp" />
+		<Unit filename="vox/vobjReadV8l.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

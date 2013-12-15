@@ -6,6 +6,8 @@
 #include <ctime>
 #include <iostream>
 
+#include "quat.h"
+
 #ifndef WIN64
 #include <omp.h>
 #endif
@@ -15,7 +17,7 @@ using namespace std;
 mtype identityarr[9]={1,0,0,0,1,0,0,0,1};
 matrix I(3,3,(mtype*)identityarr);
 
-const long double pi=4*atan(1.0l);
+const double pi=4*atan(1.0l);
 
 //this appears to be for a more mathematical xyz, where z is up
 ///TODO: rederive this to work with my coordinates
@@ -33,10 +35,10 @@ camera::camera(surface* target,double view_angle,double x0,double y0,double z0):
 	aspctRatio(double(target->h)/target->w),width(1),
 	dir(vec3d(0,0,1)),
 	xvec(vec3d(1,0,0)),
-	yvec(vec3d(0,1,0)),
+	yvec(vec3d(0,aspctRatio,0)),
 	pos(vec3d(x0,y0,z0)),
-	bgCol(0x000000)
-	//bgCol(0xff00ff)
+	//bgCol(0x000000)/*
+	bgCol(0xff00ff)//*/
 {
 	setViewangle(view_angle);//this sets dir
 
@@ -44,10 +46,9 @@ camera::camera(surface* target,double view_angle,double x0,double y0,double z0):
 }
 
 point2d camera::getCoords(double x,double y,double z,bool* visible){
-	vec3d v(x,y,z),intrsct,tmp=pos-dir;
+	vec3d v(x,y,z),intrsct;
 	point2d p;
-	v-=tmp;
-	//v.normalize();//by doing this, t becomes the distance
+	v-=pos-dir;
 
 	/*
 	vectors: n,p,v,vp
@@ -65,16 +66,11 @@ point2d camera::getCoords(double x,double y,double z,bool* visible){
 	t=-(v0 dot n)/(v dot n)
 	*/
 
-	const double t=
-		-(dir.dot(tmp))/(dir.dot(v));
-		//(dir.dot(tmp))/(dir.dot(v));
-
-		//-(dir.dot(v))/(dir.dot(tmp));
-		//(dir.dot(v))/(dir.dot(tmp));
+	const double t=dir.magSqr()/(dir.dot(v));
 	if(visible!=NULL){
 		*visible=(t>=0);
 	}
-	intrsct=tmp+v*t-pos;
+	intrsct=v*t-dir;
 
 	p.x=intrsct.dot(xvec)*xvec.invMagSqr();
 	//p.x=intrsct.dot(xvec)/(width*width/4);
@@ -115,8 +111,12 @@ void camera::traceScene(vobj* object){
 	if(object==NULL){
 		return;
 	}
+	/*
 	#define w (scrn->w)
 	#define h (scrn->h)
+	/*/
+	const int w=scrn->w,h=scrn->h;
+	//*/
 
 	/*
 	Range Constant Linear Quadratic
@@ -133,6 +133,7 @@ void camera::traceScene(vobj* object){
 	13, 1.0, 0.35, 0.44
 	7, 1.0, 0.7, 1.8
 	*/
+	#define expr 1//((0.0075*t+0.045)*t+1)
 
 	#if logtime
 	long long time=clock();
@@ -144,45 +145,230 @@ void camera::traceScene(vobj* object){
 
 	vec3d v;
 	uint32_t color;
-	vec3d xv;
 	double falloff;
 	object->updateVals();
-	vec3d tmp=pos-dir;
-	const double pixrad=min(xvec.magnitude()/w,yvec.magnitude()/h);
+	const vec3d tmp=pos-dir;
+	//const double pixrad=max(xvec.magnitude()/w,yvec.magnitude()/h)/dir.magnitude();
+	const double pixrad=sqrt(xvec.magSqr()/(w*w)+yvec.magSqr()/(h*h))/dir.magnitude();//division is needed so that
 
+	#if logtime
 	int rayCount=0;
-
-	#define expr ((0.2*t+0.22)*t+1)
+	#endif
 
 	//printf("%i\n",omp_get_dynamic());
 
+	#define conetrace 0
+
+	#if conetrace
+	#define blockwidth 4
+
+	SDL_Surface* tmpscrn=SDL_CreateRGBSurface(
+		SDL_HWACCEL|SDL_HWSURFACE|SDL_HWPALETTE|SDL_ASYNCBLIT,
+		blockwidth,blockwidth,32,
+		0x00ff0000,
+		0x0000ff00,
+		0x000000ff,
+		0x00000000
+	);
+
+	uint32_t* tmppix=(uint32_t*)tmpscrn->pixels;
+	SDL_Rect rect;
+	rect.w=blockwidth;
+	rect.h=blockwidth;
+
+	int kx,ky;
+
+	#if 1
+	/*const double invrad=invsqrt(xvec.magSqr()+yvec.magSqr());
+	const double conecos=
+	/*/
+	//dir=1/(2tan(theta)) note that both use theta/2, and therefore the division is not necessary
+	//theta=atan(1/(2dir));
+	const double theta=atan(dir.invMagnitude()/2);
+	const double
+		conesin=sin(theta*invsqrt(w*w+h*h)/2);
+		conecos=cos(theta*invsqrt(w*w+h*h)/2);
+	//*/
+
+	for(int i=0;i<w*h;i+=blockwidth){
+		v=dir;
+		v+=((2.0*(i%w+blockwidth/2))/w-1)*xvec;
+		v+=((2.0*(h-(i/w+blockwidth/2)-1))/h-1)*yvec;
+
+
+
+		if(true){
+			for(int k=0;k<blockwidth*blockwidth;k++){
+				kx=i%w+(k%blockwidth);
+				ky=i/w+k/blockwidth;
+				//*/
+				v=dir;
+				v+=((2.0*kx)/w-1)*xvec;
+				v+=((2.0*(h-ky-1))/h-1)*yvec;
+
+				v.normalize();
+				test=object->intersects(v,tmp,pixrad,&color,&t);
+
+				falloff=expr;
+				r=((color>>16)&0xff)*falloff;
+				g=((color>>8)&0xff)*falloff;
+				b=(color&0xff)*falloff;
+
+				//pixels[kx+w*ky]=(test*((0xff<<24)|(r<<16)|(g<<8)|b))^((!test)*bgCol);
+				tmppix[k]=(test*((0xff<<24)|(r<<16)|(g<<8)|b))^((!test)*bgCol);
+			}
+			rect.x=i%w;
+			rect.y=i/w;
+			SDL_BlitSurface(tmpscrn,&tmpscrn->clip_rect,scrn,&rect);
+		}
+	}
+	/**sphere cone intersection pseudocode:
+	bool SphereIntersectsCube (Sphere S, Cone K)
+	{
+		U = K.vertex - (Sphere.radius/K.sin)*K.axis;
+		D = S.center - U;
+		if( Dot(K.axis,D) >= Length(D)*k.cos )
+		{
+			// center is inside K''
+			D = S.center - K.vertex;
+			if( -Dot(K.axis,D) >= Length(D)*K.sin )
+			{
+				// center is inside K'' and inside K'
+				return Length(D) <= S.radius;
+			}
+			else
+			{
+				// center is inside K'' and outside K''
+				return true;
+			}
+		}
+		else
+		{
+			// center is outside K''
+			return false;
+		}
+	}
+	*/
+	#else
+	const double conerad=(pixrad*blockwidth)/2;
+	double dot,rad;
+	int boundx,boundy;
+
+	//#pragma omp parallel for
+	for(int i=0;i<w*h;i+=blockwidth){
+		v=dir;
+		v+=((2.0*(i%w+blockwidth/2))/w-1)*xvec;
+		v+=((2.0*(h-(i/w+blockwidth/2)-1))/h-1)*yvec;
+
+		dot=object->pos.dot(v);
+		dot*=dot;
+		dot/=v.magSqr();
+		rad=
+			conerad/invsqrt(object->pos.magSqr()-dot)
+			+
+			1/invsqrt(
+				object->w*object->w
+				+
+				object->h*object->h
+				+
+				object->d*object->d);
+		rad*=rad;
+
+		if(dot<=rad){
+			#if 1
+			for(int k=0;k<blockwidth*blockwidth;k++){
+			#else
+			/*
+			boundx=((w-(i%w+blockwidth)>0)*(min(blockwidth,w-(i%w+blockwidth))^blockwidth))^blockwidth;
+			boundy=((h-(i/w+blockwidth)>0)*(min(blockwidth,h-(i/w+blockwidth))^blockwidth))^blockwidth;
+			/*/
+			boundx=min(blockwidth,w-(i%w+blockwidth));
+			boundy=min(blockwidth,h-(i/w+blockwidth));
+			//*/
+			for(int k=0;k<boundx*boundy;k++){
+			#endif
+				/*
+				kx=i%w+(k%boundx);
+				ky=i/w+k/boundx;
+				/*/
+				kx=i%w+(k%blockwidth);
+				ky=i/w+k/blockwidth;
+				//*/
+				v=dir;
+				v+=((2.0*kx)/w-1)*xvec;
+				v+=((2.0*(h-ky-1))/h-1)*yvec;
+
+				v.normalize();
+				test=object->intersects(v,tmp,pixrad,&color,&t);
+
+				falloff=expr;
+				r=((color>>16)&0xff)*falloff;
+				g=((color>>8)&0xff)*falloff;
+				b=(color&0xff)*falloff;
+
+				//pixels[kx+w*ky]=(test*((0xff<<24)|(r<<16)|(g<<8)|b))^((!test)*bgCol);
+				tmppix[k]=(test*((0xff<<24)|(r<<16)|(g<<8)|b))^((!test)*bgCol);
+			}
+			rect.x=i%w;
+			rect.y=i/w;
+			SDL_BlitSurface(tmpscrn,&tmpscrn->clip_rect,scrn,&rect);
+		}
+	}//}
+	#endif
+
+	SDL_FreeSurface(tmpscrn);
+
+	#else
 	#ifndef WIN64
-	#pragma omp parallel for private(t,test,r,g,b,v,color,xv,falloff) reduction( + : rayCount )
+	#if logtime
+	#pragma omp parallel for private(t,test,r,g,b,v,color,falloff) reduction( + : rayCount )// schedule(dynamic,32)
 	for(int i=0;i<w*h;i++){
+	#else
+	#pragma omp parallel for private(t,test,r,g,b,v,color,falloff)// schedule(dynamic,32)
+	for(int i=0;i<w*h;i++){
+	#endif
 	#else
 	for(int i=0;i<w*h;i++){
 	#endif
-		xv=((2.0*(i%w))/w-1)*xvec;
-		xv+=dir;
-		v=xv;
+		/*
+		v=dir;
+		v+=((2.0*(i%w))/w-1)*xvec;
 		v+=((2.0*(h-(i/w)-1))/h-1)*yvec;
+		/*/
+		#if 0
+		v=vec3d(
+			dir.x+((2.0*(i%w))/w-1)*xvec.x+((2.0*(h-(i/w)-1))/h-1)*yvec.x,
+			dir.y+((2.0*(i%w))/w-1)*xvec.y+((2.0*(h-(i/w)-1))/h-1)*yvec.y,
+			dir.z+((2.0*(i%w))/w-1)*xvec.z+((2.0*(h-(i/w)-1))/h-1)*yvec.z
+		);
+		#else
+		v.x=dir.x+((2.0*(i%w))/w-1)*xvec.x+((2.0*(h-(i/w)-1))/h-1)*yvec.x;
+		v.y=dir.y+((2.0*(i%w))/w-1)*xvec.y+((2.0*(h-(i/w)-1))/h-1)*yvec.y;
+		v.z=dir.z+((2.0*(i%w))/w-1)*xvec.z+((2.0*(h-(i/w)-1))/h-1)*yvec.z;
+		#endif
+		//*/
 
 		v.normalize();//if i never have to compare adjacent pixels, then normalizing is unnessessary, though that seems unrealistic
+		t=INFINITY;
 		test=object->intersects(v,tmp,pixrad,&color,&t);
 		//test=object->intersects(dir,tmp,&color,&t);//orthagonal
 
+		#if logtime
 		rayCount+=test;
+		#endif
 
 		//printf(("v:%f %f %f\ttest:"+string((test)?"true":"false")+"\n").c_str(),v[0],v[1],v[2]);
 
-		falloff=1.0/expr;
+		falloff=expr;
 		r=((color>>16)&0xff)*falloff;
 		g=((color>>8)&0xff)*falloff;
 		b=(color&0xff)*falloff;
 		//*/
 
-		//pixels[i]=test*((0xff<<24)|(r<<16)|(g<<8)|b)+(!test)*bgCol;
-		pixels[i]=test*((0xff<<24)|(r<<16)|(g<<8)|b)+(1-test)*bgCol;
+		pixels[i]=bgCol^(test*(((0xff<<24)|(r<<16)|(g<<8)|b)^bgCol));
+		//pixels[i]=test*((0xff<<24)|(r<<16)|(g<<8)|b)+(1-test)*bgCol;
+
+		//if(i%64==0){SDL_Flip(scrn);}
 	}
 
 	#if logtime
@@ -190,6 +376,7 @@ void camera::traceScene(vobj* object){
 
 	printf("number of rays that hit: %i\ttime: %lli\tseconds: %llf\n",rayCount,time,double(time)/CLOCKS_PER_SEC);
 	//cout<<"number of rays that hit: "<<rayCount<<"\ttime: "<<time<<"\tseconds: "<<time/CLOCKS_PER_SEC<<endl;
+	#endif
 	#endif
 
 	#undef w
@@ -205,7 +392,7 @@ void camera::setViewangle(double angle){
 	dir.normalize();
 	dir*=focusLen;
 }
-double camera::getViewangle(){
+double camera::getViewangle() const{
 	return viewangle;
 }
 
@@ -485,9 +672,9 @@ void camera::addToAngles(double incl,double azim,double tlt){
 }
 
 ///I WILL NOT BE STORING INCLINE OR AZIMUTH, THESE SHOULD BE CALCULATED
-double camera::getIncline(){}
-double camera::getAzimuth(){}
-double camera::getTilt(){return tilt;}
+double camera::getIncline() const{}
+double camera::getAzimuth() const{}
+double camera::getTilt() const{return tilt;}
 
 void camera::translate(double x,double y,double z){
 	pos+=vec3d(x,y,z);
@@ -513,6 +700,7 @@ void camera::moveTo(vecref v){
 }
 
 vec3d camera::getXvec(){
+	//printf("xvec: <%f,%f,%f>\n",xvec.x,xvec.y,xvec.z);
 	return xvec;
 }
 vec3d camera::getYvec(){
@@ -520,4 +708,59 @@ vec3d camera::getYvec(){
 }
 vec3d camera::getZvec(){
 	return dir;
+}
+
+void camera::orbitd(double angle,const vec3d& axis){
+	//printf("axis: <%f,%f,%f>\n",axis.x,axis.y,axis.z);
+	quat q(angle*pi/180,axis);
+	pos=q.applyTo(pos);
+
+	dir=q.applyTo(dir);
+	xvec=q.applyTo(xvec);
+	yvec=q.applyTo(yvec);
+}
+void camera::orbitd(double angle,const vec3d& axis,const vec3d& origin){
+	quat q(angle*pi/180,axis);
+	pos-=origin;
+	pos=q.applyTo(pos);
+	pos+=origin;
+
+	dir=q.applyTo(dir);
+	xvec=q.applyTo(xvec);
+	yvec=q.applyTo(yvec);
+}
+
+void camera::orbitr(double angle,const vec3d& axis){
+	quat q(angle,axis);
+	pos=q.applyTo(pos);
+
+	dir=q.applyTo(dir);
+	xvec=q.applyTo(xvec);
+	yvec=q.applyTo(yvec);
+}
+void camera::orbitr(double angle,const vec3d& axis,const vec3d& origin){
+	pos-=origin;
+	quat q(angle,axis);
+	pos=q.applyTo(pos);
+	pos+=origin;
+
+	dir=q.applyTo(dir);
+	xvec=q.applyTo(xvec);
+	yvec=q.applyTo(yvec);
+}
+
+void camera::rotated(double angle,const vec3d& axis){
+	//printf("axis: <%f,%f,%f>\n",axis.x,axis.y,axis.z);
+	quat q(angle*pi/180,axis);
+
+	dir=q.applyTo(dir);
+	xvec=q.applyTo(xvec);
+	yvec=q.applyTo(yvec);
+}
+void camera::rotatef(double angle,const vec3d& axis){
+	quat q(angle,axis);
+
+	dir=q.applyTo(dir);
+	xvec=q.applyTo(xvec);
+	yvec=q.applyTo(yvec);
 }

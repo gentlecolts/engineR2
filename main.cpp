@@ -12,15 +12,37 @@ void sleep(long millis){
 }
 #endif
 
+#define screenres 2
+
+#if screenres==0
+#define xmax 320
+#define ymax 240
+#elif screenres==1
+#define xmax 480
+#define ymax 360
+#elif screenres==2
 #define xmax 640
 #define ymax 480
+#elif screenres==3
+#define xmax 600
+#define ymax 600
+#elif screenres==4
+#define xmax 700
+#define ymax 700
+#elif screenres==5
+#define xmax 800
+#define ymax 800
+#elif screenres==6
+#define xmax 1280
+#define ymax 720
+#endif
 
 SDL_Surface* screen;
 uint32_t* pixels;
 SDL_Event e;
 
 int key;
-bool up,dn,lf,rt,fw,bw;
+bool up,dn,lf,rt,fw,bw,tl,tr;
 void chkClose(){
 	if(SDL_PollEvent(&e)){
 		switch(e.type){
@@ -35,6 +57,8 @@ void chkClose(){
 			if(key==SDLK_RIGHT || key==SDLK_d){rt=true;}
 			if(key==SDLK_i){up=true;}
 			if(key==SDLK_k){dn=true;}
+			if(key==SDLK_j){tl=true;}
+			if(key==SDLK_l){tr=true;}
 			break;
 		case SDL_KEYUP:
 			key=e.key.keysym.sym;
@@ -44,6 +68,8 @@ void chkClose(){
 			if(key==SDLK_RIGHT || key==SDLK_d){rt=false;}
 			if(key==SDLK_i){up=false;}
 			if(key==SDLK_k){dn=false;}
+			if(key==SDLK_j){tl=false;}
+			if(key==SDLK_l){tr=false;}
 			break;
 		}
 	}
@@ -58,8 +84,6 @@ int main(int argc,char** argv){
 	pixels=(uint32_t*)screen->pixels;
 
 	vobj o2(1,1,1,0,0,0);
-
-	camera cam(screen,4*atan(1.0)/3,1,1,1);
 
 	/*
 	cout<<sizeof(double)<<endl;
@@ -114,6 +138,7 @@ int main(int argc,char** argv){
 	7	---
 	*/
 
+	#if 0
 	vnode *node0,*node1,*node2,*node3;
 	node0=o2.head;
 	node0->initChildren(0xff);
@@ -266,11 +291,12 @@ int main(int argc,char** argv){
 	node2->initChildren(0x05);
 
 	o2.head->calcColors();
+	#endif
 
 	printf("before write\n");
 	//o2.writeToFile("data\\obj.v8l");
 	printf("after write\n");
-	vobj o(2,2,2,0,0,0);
+	vobj o(1,1,1,0,0,0);
 	//o.readFromFile("data\\obj.v8l");
 	SDL_WM_SetCaption("loading file",NULL);
 	//o.readFromFile("data\\neptune_4Mtriangles_manifold\\803_neptune_4Mtriangles_manifold.off");
@@ -278,12 +304,30 @@ int main(int argc,char** argv){
 	//o.readFromFile("data\\Chinese_dragon\\783_Chinese_dragon.off");
 	//o.readFromFile("data\\chair.off");
 	o.readFromFile("data\\pleo\\pleo.off");
+	//o.readFromFile("data\\abstr.off");
+	//o.readFromFile("data\\octa.off");
+	//o.readFromFile("data\\socket.off");
 	//o.readFromFile("data\\pleo.v8l");
 	printf("after read\n");
 
 	SDL_WM_SetCaption("writing",NULL);
 
 	cout<<"blah"<<endl;
+
+	#if linkparent && 0
+	vnode* head=o.head,*node;
+	printf("---node testing---\nhead: 0x%p\n",head);
+	printf("headpntr: 0x%p\n",&(head->nodes->selfpntr));
+	int diff;
+	for(int i=0;i<8;i++){
+		node=&(head->nodes->next[i]);
+		printf("node(%i) addr: 0x%p",i,node);
+		diff=sizeof(vnode)*((node->shape>>8)&0x7)+sizeof(vnode*);
+		//printf("\t calculated head (inline): 0x%p",*(vnode**)((int)node - diff));
+		node=node->getParent();
+		printf("\t calculated head: 0x%p\t off by: 0x%x\n",node,node-head);
+	}
+	#endif
 
 	//sleep(100);
 	//o.writeToFile("data\\chinese_dragon.v8l");
@@ -295,17 +339,51 @@ int main(int argc,char** argv){
 	o2.xvec.y=0.2;
 	//*/
 
+	uint32_t subtest=0;
+	--subtest;
+	cout<<"unsigned test: "<<subtest<<endl;
+	cout<<"unsigned test2: "<<(subtest+1==0)<<endl;
+	cout<<"unsigned test3: "<<(subtest==-1)<<endl;
+
+	cout<<"bitshift tesst: "<<(1>>-1)<<endl;
+
+	char tmpstr[65];
+	long long tmpllong=0x7fffffffffffffffll;
+	//long long tmpllong=(~0ull)>>1;
+	cout<<"~0ll: "<<tmpllong<<endl;
+	//cout<<"~0ll: "<<itoa(tmpllong,tmpstr,10)<<endl;
+
 	SDL_Flip(screen);
+	long t;
+	const vec3d xaxis(1,0,0),yaxis(0,1,0),zaxis(0,0,1);
+
+	//camera cam(screen,4*atan(1.0)/3,0,0,1.1);
+	camera cam(screen,4*atan(1.0)/3,0,0,-2);
+	//camera cam(screen,4*atan(1.0)/3,2,2,-2);
+	//camera cam(screen,4*atan(1.0)/3,0,0,-100);
+
+	//cam.pos.normalize();
+	//cam.lookAt(0,0,0);
+
+	//cam.orbitd(180,yaxis,cam.pos);//bad, doesnt work because refrences, fix later
+	//cam.rotated(180,yaxis);
+	//cam.rotated(45,yaxis);
 
 	draw:
 		SDL_WM_SetCaption("drawing",NULL);
 		SDL_FillRect(screen,&(screen->clip_rect),0x000000);
 
-		cam.lookAt(0,0,0);
+		//cam.lookAt(0,0,0);
+		//cam.pos.normalize();
+		//t=clock();
 		cam.traceScene(&o);
-		cam.drawLine(0,0,0,1,0,0,0xff0000);
-		cam.drawLine(0,0,0,0,1,0,0x00ff00);
-		cam.drawLine(0,0,0,0,0,1,0x0000ff);
+		//t=clock()-t;
+		//printf("time: %li\n",t);
+		//*
+		//cam.drawLine(0,0,0,1,0,0,0xff0000);
+		//cam.drawLine(0,0,0,0,1,0,0x00ff00);
+		//cam.drawLine(0,0,0,0,0,1,0x0000ff);
+		//*/
 		//cam.traceScene(o[0]);
 		//cam.traceScene(2,o);
 
@@ -314,13 +392,23 @@ int main(int argc,char** argv){
 		SDL_WM_SetCaption("done",NULL);
 		wait:
 			chkClose();
-			if(up|dn|lf|rt|fw|bw){
+			if(up|dn|lf|rt|fw|bw|tl|tr){
 				#define step 0.1
+				#define dt 5
 				//cam.translate(step*(rt-lf),step*(up-dn),step*(fw-bw));
-				cam.translateOriented(step*(rt-lf),step*(up-dn),step*(fw-bw));
+				//cam.translateOriented(step*(rt-lf),step*(up-dn),step*(fw-bw));
 				//cam.translate(step*(rt-lf),0,step*(up-dn));
+
+				cam.translateOriented(0,0,step*(fw-bw));
+				//cam.orbitd(dt*(tr-tl),zaxis);
+				//cam.orbitd(dt*(up-dn),xaxis);
+				//cam.orbitd(-dt*(rt-lf),yaxis);
+				cam.orbitd(dt*(tr-tl),cam.getZvec().getNormalized());
+				cam.orbitd(dt*(up-dn),cam.getXvec().getNormalized());
+				cam.orbitd(-dt*(rt-lf),cam.getYvec().getNormalized());
 				goto draw;
 			}
-		sleep(1);
+		//sleep(1);
 		goto wait;
+	return 0;
 }

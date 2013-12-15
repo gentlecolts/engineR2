@@ -12,7 +12,8 @@ typedef const vec3d& vecref;
 struct quat{
 	double a,b,c,d;
 
-	quat(double a0=0,double x=0,double y=0,double z=0);
+	quat();
+	quat(double a0,double b0,double c0,double z0);
 	quat(double t,vecref v);
 
 	void setFromAngleVector(double t,vecref v);
@@ -24,6 +25,10 @@ struct quat{
 
 	quat operator *(double q) const;
 	quat operator /(double q) const;
+
+	quat operator *(vecref v) const;
+
+	vec3d applyTo(vecref v) const;
 
 	quat& operator +=(quatref q);
 	quat& operator -=(quatref q);
@@ -44,8 +49,6 @@ struct quat{
 	quat getNormalized() const;
 	void normalize();
 
-	vec3d operator *(vecref v) const;
-
 	operator matrix() const;
 };
 
@@ -54,5 +57,7 @@ quat conj(quatref q);
 
 quat operator *(double a,quatref q);
 quat operator /(double a,quatref q);
+
+quat operator *(vecref v,quatref q);
 
 #endif // QUAT_H_INCLUDED

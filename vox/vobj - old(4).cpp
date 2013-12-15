@@ -115,14 +115,9 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pix
 	typedef uint32_t dtype;//depth type
 	const dtype gsize=(0x1ll<<maxdepth);
 
-	//constants defining whether or not to use certain alternate methods
 	#define dconst 1
+
 	#define tsimp 1
-	#define skipblock 0
-	#define oneconst 1
-	#define go_up 0
-	#define oneloop 1
-	#define storemin 0
 
 	#if tsimp
 	/*
@@ -134,9 +129,9 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pix
 	x0*2*w/delta.x-gsize*(p0.x+w+tlow*delta.x)/delta.x;
 	*/
 	const double
-		dxinv=dconst*w/(gsize*delta.x),
-		dyinv=dconst*h/(gsize*delta.y),
-		dzinv=dconst*d/(gsize*delta.z);
+		dxinv=dconst*w/delta.x,
+		dyinv=dconst*h/delta.y,
+		dzinv=dconst*d/delta.z;
 	#endif
 
 	/*
@@ -176,7 +171,11 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pix
 
 	vnode* tmpnode;
 
+	#define oneconst 1
+
 	long long txy,txz,tyz;
+
+	#define skipblock 1
 
 	//delta.normalize();
 
@@ -185,7 +184,6 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pix
 		invdy=1/(delta.y*gsize),
 		invdz=1/(delta.z*gsize);
 	#if skipblock
-	double t,t0=0;
 	p0*=gsize;
 	#else
 	p0.x=(delta.x>0)-p0.x*gsize;
@@ -201,6 +199,10 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pix
 		sgndz=(delta.z>0)-(delta.z<0);
 
 	int i=0;
+
+	#define go_up 0
+	#define oneloop 1
+	#define storemin 0
 
 	#if go_up
 	tmpnode=node;
@@ -325,54 +327,9 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pix
 		*/
 
 		#if skipblock
-		#if tsimp
-		//*
-		#if 0
 		*(double*)&tyz=((((x>>depth)+(delta.x>0))<<depth)-p0.x)*dxinv;
 		*(double*)&txz=((((y>>depth)+(delta.y>0))<<depth)-p0.y)*dyinv;
 		*(double*)&txy=((((z>>depth)+(delta.z>0))<<depth)-p0.z)*dzinv;
-		#else
-		*(double*)&tyz=((((x>>depth)+(delta.x>0))<<depth)-p0.x)/delta.x;
-		*(double*)&txz=((((y>>depth)+(delta.y>0))<<depth)-p0.y)/delta.y;
-		*(double*)&txy=((((z>>depth)+(delta.z>0))<<depth)-p0.z)/delta.z;
-		#endif
-		/*/
-		*(double*)&tyz=((((((x>>depth)+(delta.x>0))<<1)|0x1)<<(depth-1))-p0.x)*dxinv;
-		*(double*)&txz=((((((y>>depth)+(delta.y>0))<<1)|0x1)<<(depth-1))-p0.y)*dyinv;
-		*(double*)&txy=((((((z>>depth)+(delta.z>0))<<1)|0x1)<<(depth-1))-p0.z)*dzinv;
-		//*/
-
-		#else
-		/*
-		*(double*)&tyz=((((x>>depth)+(delta.x>0))<<depth)-p0.x)*invdx;
-		*(double*)&txz=((((y>>depth)+(delta.y>0))<<depth)-p0.y)*invdy;
-		*(double*)&txy=((((z>>depth)+(delta.z>0))<<depth)-p0.z)*invdz;
-		/*/
-
-		*(double*)&tyz=((((x>>depth)+(delta.x>0))<<depth)-p0.x)/(delta.x);
-		*(double*)&txz=((((y>>depth)+(delta.y>0))<<depth)-p0.y)/(delta.y);
-		*(double*)&txy=((((z>>depth)+(delta.z>0))<<depth)-p0.z)/(delta.z);
-		//*/
-		#endif
-
-		/*
-		string s="---\n";
-		s+="depth: "+string(itoa(depth,tmpstr,10))+"\n  pos: ";
-		s+=string(itoa(x,tmpstr,2))+"\t";
-		s+=string(itoa(y,tmpstr,2))+"\t";
-		s+=string(itoa(z,tmpstr,2))+"\ndelta: ";
-		s+=string(itoa(delta.x>0,tmpstr,10))+"\t";
-		s+=string(itoa(delta.y>0,tmpstr,10))+"\t";
-		s+=string(itoa(delta.z>0,tmpstr,10))+"\n  new: ";
-		s+=string(itoa(((x>>depth)+(delta.x>0))<<depth,tmpstr,2))+"\t";
-		s+=string(itoa(((y>>depth)+(delta.y>0))<<depth,tmpstr,2))+"\t";
-		s+=string(itoa(((z>>depth)+(delta.z>0))<<depth,tmpstr,2))+"\n";
-		printf((s+"    t: %f\t%f\t%f\n").c_str(),tyz,txz,txy);
-		//*/
-
-
-		//x0+t*dx=
-
 		#else
 		*(double*)&tyz=(x+p0.x)*invdx;
 		*(double*)&txz=(y+p0.y)*invdy;
@@ -385,62 +342,43 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pix
 		y+=(txz==tmin)*sgndy;
 		z+=(txy==tmin)*sgndz;
 		#else
-		#if skipblock
-		/*
-		x+=((tyz<=txy) & (tyz<=txz))*sgndx*(0x1<<depth);
-		y+=((txz<=txy) & (txz<=tyz))*sgndy*(0x1<<depth);
-		z+=((txy<=txz) & (txy<=tyz))*sgndz*(0x1<<depth);
-		/*/
-		t=*(double*)&min(min(txy,txz),tyz);
-		#if 1
-		//*
-		#if 0
-		x=t*delta.x+p0.x - ((tyz==*(long long*)&t) & (delta.x<0));
-		y=t*delta.y+p0.y - ((txz==*(long long*)&t) & (delta.y<0));
-		z=t*delta.z+p0.z - ((txy==*(long long*)&t) & (delta.z<0));
-		#else
-		#if 1
-		x=t*delta.x+p0.x - ((tyz<=txy) & (tyz<=txz) & (delta.x<0));
-		y=t*delta.y+p0.y - ((txz<=txy) & (txz<=tyz) & (delta.y<0));
-		z=t*delta.z+p0.z - ((txy<=txz) & (txy<=tyz) & (delta.z<0));
-		#else
-		x+=int((t-t0)*delta.x - 1*((tyz<=txy) & (tyz<=txz) & (delta.x<0)));
-		y+=int((t-t0)*delta.y - 1*((txz<=txy) & (txz<=tyz) & (delta.y<0)));
-		z+=int((t-t0)*delta.z - 1*((txy<=txz) & (txy<=tyz) & (delta.z<0)));
-		t0=t;
-		#endif
-		#endif
-		/*/
-		const bool
-			b0=(tyz==*(long long*)&t),
-			b1=(txz==*(long long*)&t),
-			b2=(txy==*(long long*)&t);
-		x=(dtype(t*delta.x+p0.x)>>(b0*depth))<<(b0*depth) - (b0 & (delta.x<0));
-		y=(dtype(t*delta.y+p0.y)>>(b1*depth))<<(b1*depth) - (b1 & (delta.y<0));
-		z=(dtype(t*delta.z+p0.z)>>(b2*depth))<<(b2*depth) - (b2 & (delta.z<0));
-		//*/
-		#elif 0
-		x=round(t*delta.x+p0.x+0.5*(delta.x<0));
-		y=round(t*delta.y+p0.y+0.5*(delta.y<0));
-		z=round(t*delta.z+p0.z+0.5*(delta.z<0));
-		#else
-		#define eps (1e-30)
-		x=(t*delta.x+p0.x+eps*sgndx);
-		y=(t*delta.y+p0.y+eps*sgndy);
-		z=(t*delta.z+p0.z+eps*sgndz);
-		#endif
-		//*/
 
+		#if skipblock
+		if((tyz<=txy) & (tyz<=txz)){
+			//const int dx=(((x+sgndx*(0x1<<depth))>>depth)<<depth)-x;
+			//const int dx=(((x>>depth)+sgndx)<<depth)-x;
+			//const int dx=((delta.x>0)-p0.x+gsize*tyz*delta.x)-x;
+			//const int dx=(p0.x+tyz*delta.x)-x;
+			//const int dx=(((x+(delta.x>0)*(0x1<<depth))>>depth)<<depth)-x;
+			const int dx=(((x>>depth)+(delta.x>0))<<depth)-x;
+			x+=dx-(delta.x<0);
+			y+=(delta.y*dx)/delta.x;
+			z+=(delta.z*dx)/delta.x;
+		}else if((txz<=txy) & (txz<=tyz)){
+			//const int dy=(((y+sgndy*(0x1<<depth))>>depth)<<depth)-y;
+			//const int dy=(((y>>depth)+sgndy)<<depth)-y;
+			//const int dy=((delta.y>0)-p0.y+gsize*txz*delta.y)-y;
+			//const int dy=(p0.y+txz*delta.y)-y;
+			//const int dy=(((y+(delta.y>0)*(0x1<<depth))>>depth)<<depth)-y;
+			const int dy=(((y>>depth)+(delta.y>0))<<depth)-y;
+			y+=dy-(delta.y<0);
+			x+=(delta.x*dy)/delta.y;
+			z+=(delta.z*dy)/delta.y;
+		}else{
+			//const int dz=(((z+sgndz*(0x1<<depth))>>depth)<<depth)-z;
+			//const int dz=(((y>>depth)+sgndy)<<depth)-y;
+			//const int dz=((delta.z>0)-p0.z+gsize*txy*delta.z)-z;
+			//const int dz=(p0.z+txy*delta.z)-z;
+			//const int dz=(((z+(delta.z>0)*(0x1<<depth))>>depth)<<depth)-z;
+			const int dz=(((z>>depth)+(delta.z>0))<<depth)-z;
+			z+=dz-(delta.z<0);
+			y+=(delta.y*dz)/delta.z;
+			x+=(delta.x*dz)/delta.z;
+		}
 		#else
-		//*
 		x+=((tyz<=txy) & (tyz<=txz))*sgndx;
 		y+=((txz<=txy) & (txz<=tyz))*sgndy;
 		z+=((txy<=txz) & (txy<=tyz))*sgndz;
-		/*/
-		x+=int(min(min(txy,txz),tyz)*delta.x);
-		y+=int(min(min(txy,txz),tyz)*delta.y);
-		z+=int(min(min(txy,txz),tyz)*delta.z);
-		//*/
 		#endif
 		#endif
 

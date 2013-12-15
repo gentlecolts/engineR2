@@ -30,14 +30,22 @@ void vobj::writeToFile(string filename){
 }
 void vobj::writeout(queue<char>* q,vnode* node){
 	q->push(node->shape);
+	#if linkparent
+	if(node->shape==0 || !(node->nodes)){
+	#else
 	if(node->shape==0 || !(node->next)){
+	#endif
 		q->push(((node->color)>>16)&0xff);
 		q->push(((node->color)>>8)&0xff);
 		q->push((node->color)&0xff);
 	}else{
 		for(int i=0;i<8;i++){
 			if(((node->shape)>>i)&0x01){
+				#if linkparent
+				writeout(q,&(node->nodes->next[i]));
+				#else
 				writeout(q,&(node->next[i]));
+				#endif
 			}
 		}
 	}

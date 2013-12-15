@@ -30,8 +30,12 @@ static inline std::string &trim(std::string &s) {
         return ltrim(rtrim(s));
 }
 
+
+#define logging 0
+
+
 pos_t getNextOffLine(char* data,pos_t strpos,pos_t size,string* line){
-	#define chartest ((data[strpos]>='0' && data[strpos]<='9') || data[strpos]=='.' || data[strpos]=='-')
+	#define chartest ((data[strpos]>='0' && data[strpos]<='9') || data[strpos]=='.' || data[strpos]=='-' || data[strpos]=='#')
 
 	stringstream linestream;
 	bool b;
@@ -41,24 +45,50 @@ pos_t getNextOffLine(char* data,pos_t strpos,pos_t size,string* line){
 	}
 	//line="";
 
+	char lastchar='#';//some non-whitespace character
+
 	while(strpos<size && data[strpos]!='\r' && data[strpos]!='\n'){
 		//if((int)nums.find(data[strpos])>=0){
 		b=chartest;
 		//c=data[strpos];
+		#if 1
 		linestream<<char((b*data[strpos])^((!b)*' '));
+		#else
+		b&=!(isspace(lastchar) && isspace(data[strpos]));
+		if(b){
+			lastchar=data[strpos];
+			linestream<<lastchar;
+		}
+		#endif
 		strpos+=1;
 	}
 
 	*line=linestream.str();
+	#if 1
 	if((*line)[line->size()-1]!=' '){
 		*line+=' ';
 	}
+	#else
+	int linebegin=0,lineend=line->size()-1;
+	while(line->size()>0 && linebegin<lineend  && (isspace((*line)[linebegin]) || isspace((*line)[lineend]))){
+		linebegin+=isspace((*line)[linebegin]);
+		lineend-=isspace((*line)[lineend]);
+	}
+
+	*line=line->substr(linebegin,lineend-linebegin+!isspace((*line)[linebegin]));
+
+	*line+=' ';
+	#endif
+
+	#if logging
+	cout<<"at "<<strpos<<": "<<*line<<endl;
+	#endif
 
 	return strpos;
 }
 
 const string nums("0123456789-.");
-void readFromOFF(char* data,pos_t size,pos_t strpos,vnode* head){
+void readFromOFF(char* data,pos_t size,pos_t strpos,vnode* head,int maxdepth){
 	/*
 	OFF numVertices numFaces numEdges
 	x y z
@@ -68,26 +98,34 @@ void readFromOFF(char* data,pos_t size,pos_t strpos,vnode* head){
 	MVertices v1 v2 v3 ... vM
 	... numFaces like above
 	*/
-	#define maxdepth 10
+
 	double minxyz[3],maxxyz[3],avgxyz[3];
 
-	string line;
+	string line("#");
 
 	bool b;
 	long numvert,numtri;//long long
 
-	strpos=getNextOffLine(data,strpos,size,&line);
+	while(line[0]=='#'){
+		strpos=getNextOffLine(data,strpos,size,&line);
+	}
 
 	int start=0;
 	int pos=line.find(' ');
 	numvert=atoi(line.substr(start,pos-start).c_str());
 	vert* verts=new vert[numvert];
+
+	#if logging
 	printf("num verts:%i\n",numvert);
+	#endif
 
 	start=pos+1;
 	pos=line.find(' ',start);
 	numtri=atoi(line.substr(start,pos-start).c_str());
+
+	#if logging
 	printf("num face:%i\n",numtri);
+	#endif
 
 	uint32_t rgba[4];
 	int colnum;
@@ -126,8 +164,13 @@ void readFromOFF(char* data,pos_t size,pos_t strpos,vnode* head){
 			++colnum;
 		}
 
+		#if 0
 		verts[i].hascolor=colnum>2;
 		verts[i].color=(rgba[3]<<24)|(rgba[0]<<16)|(rgba[1]<<8)|rgba[2];
+		#else
+		verts[i].hascolor=true;
+		verts[i].color=vnode::defcol ^ ((colnum>2)* (((rgba[3]<<24)|(rgba[0]<<16)|(rgba[1]<<8)|rgba[2])^vnode::defcol));
+		#endif
 
 		//if(verts[i].hascolor){printf("vert:%i\tcolor: %x %x %x %x\n",i,rgba[3],rgba[0],rgba[1],rgba[2]);}
 
@@ -143,9 +186,10 @@ void readFromOFF(char* data,pos_t size,pos_t strpos,vnode* head){
 	//load all of the faces
 	poly tri;
 	const double gridsize=max(max(
-					maxxyz[0]-minxyz[0],
-					maxxyz[1]-minxyz[1]),
-					maxxyz[2]-minxyz[2])/2;
+						maxxyz[0]-minxyz[0],
+						maxxyz[1]-minxyz[1]),
+						maxxyz[2]-minxyz[2]
+					)/2;
 	avgxyz[0]=(minxyz[0]+maxxyz[0])/2;
 	avgxyz[1]=(minxyz[1]+maxxyz[1])/2;
 	avgxyz[2]=(minxyz[2]+maxxyz[2])/2;
@@ -153,9 +197,19 @@ void readFromOFF(char* data,pos_t size,pos_t strpos,vnode* head){
 	const double g=1/gridsize;
 	#pragma omp parallel for
 	for(long i=0;i<numvert;i++){
+		/*
 		verts[i].x=(verts[i].x-avgxyz[0])*g;
 		verts[i].y=(verts[i].y-avgxyz[1])*g;
 		verts[i].z=(verts[i].z-avgxyz[2])*g;
+		/*/
+		verts[i].x-=avgxyz[0];
+		verts[i].y-=avgxyz[1];
+		verts[i].z-=avgxyz[2];
+
+		verts[i].x*=g;
+		verts[i].y*=g;
+		verts[i].z*=g;
+		//*/
 	}
 
 	vec3d v;
@@ -187,11 +241,12 @@ void readFromOFF(char* data,pos_t size,pos_t strpos,vnode* head){
 		tri.hascolor=colnum>2;
 		tri.color=(rgba[3]<<24)|(rgba[0]<<16)|(rgba[1]<<8)|rgba[2];
 
-
 		//find the triangle's spot in the grid
-		tri.placePoly(head,v,1,maxdepth,0.5);
+		tri.placePoly(head,v,0,maxdepth,0.5);
 		delete[] tri.verts;
 	}
 
 	delete[] verts;
+
+	head->calcColors();
 }

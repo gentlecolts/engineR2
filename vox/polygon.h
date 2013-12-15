@@ -29,7 +29,10 @@ struct poly{
 		delete[] verts;
 	}
 
-	void placePoly(vnode* node,vec3d v,const long depth,const long maxdepth,double scale);
+	void placePoly(vnode* node,vec3d v,const long depth,const long maxdepth,double scale) const;
+
+private:
+	void polyplacefunc(vnode* node,vec3d v,const long depth,const long maxdepth,double scale) const;
 };
 
 #endif // POLYGON_H_INCLUDED

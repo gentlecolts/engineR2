@@ -10,14 +10,18 @@ typedef const vobj& vobjref;
 
 class vobj{
 protected:
-	virtual bool chkIntersect(vnode* node,vec3d p,vecref p0,vecref v,vecref v0,const double& pixrad,uint32_t* color,int scale,double* closeT) const;
-	vec3d varr[6];
-	double w,h,d;
+	virtual bool chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pixrad,uint32_t* color,int scale,double* closeT) const;
+	vec3d varr[8];
+	double rsqr;
 
 	virtual void writeout(std::queue<char>* q,vnode* node);
 public:
 	vec3d pos,xvec,yvec,zvec;
 	vnode* head;
+
+	double w,h,d;
+
+	int maxdepth;
 
 	vobj(double wid=0,double hght=0,double dep=0,double x0=0,double y0=0,double z0=0);
 	vobj(vobjref o);

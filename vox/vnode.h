@@ -4,11 +4,23 @@
 #include <SDL/SDL.h>
 #include "../cam/vec3d.h"
 
+#define linkparent 1
+
+struct nodelist;
+
 struct vnode{
 	static uint32_t defcol;
 
+	#if linkparent
+	nodelist* nodes;
+	#else
 	vnode* next;
+	#endif
 	uint32_t color;
+	/**shape: 0000 0iii ssss ssss
+	s - 8 bits representing which children exist
+	i - index of this in its cluster of 8 nodes
+	*/
 	uint32_t shape;
 
 	vnode(uint8_t shp=0x00,uint32_t col=defcol);
@@ -16,6 +28,10 @@ struct vnode{
 	virtual void operator =(const vnode& node);
 	virtual ~vnode();
 	virtual void die();
+
+	#if linkparent
+	virtual vnode* getParent();
+	#endif
 
 	virtual void initChildren(uint8_t node_shape=0xff);
 	virtual void deleteChildren();
@@ -55,6 +71,12 @@ struct vnode{
 
 	vnode* getChild(int i);
 	//*/
+};
+
+struct nodelist{
+	const vnode* selfpntr;
+	vnode next[8];
+	nodelist(vnode* node);
 };
 
 #endif // VNODE_H_INCLUDED
