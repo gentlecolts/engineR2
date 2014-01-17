@@ -226,7 +226,7 @@
 	<cmath>
 	<algorithm>
 
-1386351471 source:c:\users\jack\documents\github\enginer2\cam\camera.cpp
+1389789950 source:c:\users\jack\documents\github\enginer2\cam\camera.cpp
 	<SDL/SDL.h>
 	"camera.h"
 	"../msc/functions.h"
@@ -297,7 +297,7 @@
 	"vox/vnode.h"
 	"vox/vobj.h"
 
-1386951030 source:c:\users\jack\documents\github\enginer2\main.cpp
+1389197555 source:c:\users\jack\documents\github\enginer2\main.cpp
 	<SDL/SDL.h>
 	"engine.h"
 	<cmath>
@@ -327,17 +327,16 @@
 1382711889 source:c:\users\jack\documents\github\enginer2\vox\vnode.cpp
 	"vnode.h"
 
-1386954901 source:c:\users\jack\documents\github\enginer2\vox\vobj.cpp
-	"vobj - old(2).cpp"
+1389789950 source:c:\users\jack\documents\github\enginer2\vox\vobj.cpp
+	"vobj - old(6).cpp"
 	"vobj.h"
 	"../msc/functions.h"
 	<algorithm>
 	<cmath>
 	<cstdio>
 	<iostream>
-	<sstream>
 
-1386954812 source:c:\users\jack\documents\github\enginer2\vox\vobjfileread.cpp
+1389021697 source:c:\users\jack\documents\github\enginer2\vox\vobjfileread.cpp
 	"vobj.h"
 	<cstdio>
 	"vobjReadV8l.h"
@@ -375,6 +374,14 @@
 	<cstdio>
 
 1386948615 c:\users\jack\documents\github\enginer2\vox\vobj - old(2).cpp
+	"vobj.h"
+	"../msc/functions.h"
+	<algorithm>
+	<cmath>
+	<cstdio>
+	<iostream>
+
+1388881817 c:\users\jack\documents\github\enginer2\vox\vobj - old(6).cpp
 	"vobj.h"
 	"../msc/functions.h"
 	<algorithm>

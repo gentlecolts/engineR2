@@ -1,6 +1,3 @@
-#if 1
-#include "vobj - old(6).cpp"
-#else
 #include "vobj.h"
 #include "../msc/functions.h"
 #include <algorithm>
@@ -135,74 +132,57 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pix
 
 	vec3d vec;
 
+	//long long tlow,thigh;
+	//long long tlow;
+	double
+		x1,x2,
+		y1,y2,
+		z1,z2;
+
 	double denom;
 	//*(long long*)&denom=(0x3ffll-scale-1)<<52;
 	*(long long*)&denom=(0x3ffll-scale)<<52;
 
-	/*compute an inverse tranform for the object and apply it to the ray
-	this will also change the t value, to compute the actual t,
-	-find the point of intersection with the transformed coords
-	-apply the object's matrix (not the inverse) to that point
-	-solve for the t when the original ray is at that point (beware rounding error and inf)
+	//nodeval valarr[4];
+	int numnodes=0;
+
+	bool tmpbool;
+
+	/*
+	nx*(x-x0)+ny*(y-y0)+nz*(z-z0)=0
+	nx*(dx*t+vx-x0)+ny*(dy*t+vy-y0)+nz*(dz*t+vz-z0)=0
+	nx*dx*t+nx*vx-nx*x0+ny*dy*t+ny*vy-ny*y0+nz*dz*t+nz*vz-nz*z0=0
+	(nx*dx+ny*dy+nz*dz)*t+nx*vx-nx*x0+ny*vy-ny*y0+nz*vz-nz*z0=0
+	t=((nx*x0+ny*y0+nz*z0)-(nx*vx+ny*vy+nz*vz))/(nx*dx+ny*dy+nz*dz)
+	t=(nx*(x0-vx)+ny*(y0-vy)+nz*(z0-vz))/(nx*dx+ny*dy+nz*dz)
 	*/
-	vec=v0-p;
-	//*
-	const double det=xvec.dot(yvec.cross(zvec)),
-		vx=v.dot(yvec.cross(zvec))/det,
-		vy=v.dot(xvec.cross(zvec))/det,
-		vz=v.dot(xvec.cross(yvec))/det;
+
 	double
-		v0x=vec.dot(yvec.cross(zvec))/det,
-		v0y=vec.dot(xvec.cross(zvec))/det,
-		v0z=vec.dot(xvec.cross(yvec))/det;
-	/*/
-	const double det=xvec.dot(yvec.cross(zvec)),
-		vx=v.x*xvec.x+v.y*yvec.x+v.z*zvec.x,
-		vy=v.x*xvec.y+v.y*yvec.y+v.z*zvec.y,
-		vz=v.x*xvec.z+v.y*yvec.z+v.z*zvec.z;
-	double
-		v0x=vec.x*xvec.x+vec.y*yvec.x+vec.z*zvec.x,
-		v0y=vec.x*xvec.y+vec.y*yvec.y+vec.z*zvec.y,
-		v0z=vec.x*xvec.z+vec.y*yvec.z+vec.z*zvec.z;
-	//*/
+		tyz=xvec.dot((p-denom*sgn(xvec.dot(v))*xvec)-v0)/xvec.dot(v),
+		txz=yvec.dot((p-denom*sgn(yvec.dot(v))*yvec)-v0)/yvec.dot(v),
+		txy=zvec.dot((p-denom*sgn(zvec.dot(v))*zvec)-v0)/zvec.dot(v);
+	double tlow=*(double*)&min(min(*(long long*)&tyz,*(long long*)&txz),*(long long*)&txy);
 
-	//compute intersect
-	const double
-		a=(1-2*(vx>=0))*denom,
-		b=(1-2*(vy>=0))*denom,
-		c=(1-2*(vz>=0))*denom;
-	double
-		x1=( a-v0x)/vx,
-		x2=(-a-v0x)/vx,
-		y1=( b-v0y)/vy,
-		y2=(-b-v0y)/vy,
-		z1=( c-v0z)/vz,
-		z2=(-c-v0z)/vz;
+	tyz=xvec.dot((p+denom*sgn(xvec.dot(v))*xvec)-v0)/xvec.dot(v);
+	txz=yvec.dot((p+denom*sgn(yvec.dot(v))*yvec)-v0)/yvec.dot(v);
+	txy=zvec.dot((p+denom*sgn(zvec.dot(v))*zvec)-v0)/zvec.dot(v);
 
-	#define lx1 (*(long long*)&x1)
-	#define lx2 (*(long long*)&x2)
-	#define ly1 (*(long long*)&y1)
-	#define ly2 (*(long long*)&y2)
-	#define lz1 (*(long long*)&z1)
-	#define lz2 (*(long long*)&z2)
-
-	double tlow=max(max(max(lx1,ly1),lz1),0ll);
-
-	if(*(long long*)&tlow>min(min(lx2,ly2),lz2)){
-	//if(scale==0 && *(long long*)&tlow>min(min(lx2,ly2),lz2)){
+	if(scale==0 && *(long long*)&tlow>max(max(*(long long*)&tyz,*(long long*)&txz),*(long long*)&txy)){
 		//printf("miss at scale=%i\n",scale);
 		return false;
 	}
 
-	*color=0xffffff;
-	return true;
+	if(scale==1){
+		*color=0xffffff;
+		return true;
+	}
 
 	//printf("ray hits node\n");
 
 	int
-		x=(tlow*vx+v0x>0),
-		y=(tlow*vy+v0y>0),
-		z=(tlow*vz+v0z>0);
+		x=(xvec.dot(tlow*v+v0-p)>0),
+		y=(yvec.dot(tlow*v+v0-p)>0),
+		z=(zvec.dot(tlow*v+v0-p)>0);
 	int index;
 
 	++scale;
@@ -221,27 +201,22 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pix
 				v,v0,pixrad,color,scale,(double*)&tlow
 			)
 		){
-			//*closeT=*(double*)&(tlow);
+			//*closeT=*(double*)&(valarr[i].tlow);
 			return true;
 		}
 
-		v0x=vec.dot(yvec.cross(zvec))/det;
-		v0y=vec.dot(xvec.cross(zvec))/det;
-		v0z=vec.dot(xvec.cross(yvec))/det;
-
 		//t for exit planes
-		x1=(a/2-v0x)/vx;
-		y1=(b/2-v0y)/vy;
-		z1=(c/2-v0z)/vz;
+		tyz=xvec.dot((vec-denom*sgn(xvec.dot(v))*xvec)-v0)/xvec.dot(v);
+		txz=yvec.dot((vec-denom*sgn(yvec.dot(v))*yvec)-v0)/yvec.dot(v);
+		txy=zvec.dot((vec-denom*sgn(zvec.dot(v))*zvec)-v0)/zvec.dot(v);
 
-		double tlow=max(max(max(lx1,ly1),lz1),0ll);
+		tlow=*(double*)&min(min(*(long long*)&tyz,*(long long*)&txz),*(long long*)&txy);
 
-		x+=((*(long long*)&x1)==(*(long long*)&tlow))*sgn(vx);
-		y+=((*(long long*)&y1)==(*(long long*)&tlow))*sgn(vy);
-		z+=((*(long long*)&z1)==(*(long long*)&tlow))*sgn(vz);
+		x+=((*(long long*)&tyz)==(*(long long*)&tlow))*sgn(xvec.dot(v));
+		y+=((*(long long*)&txz)==(*(long long*)&tlow))*sgn(yvec.dot(v));
+		z+=((*(long long*)&txy)==(*(long long*)&tlow))*sgn(zvec.dot(v));
 	}
 
 	//printf("%i",scale);
 	return false;
 }
-#endif

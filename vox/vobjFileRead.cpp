@@ -38,7 +38,7 @@ void vobj::readFromFile(string filename){
 		){
 			printf("loading from off\n");
 			int tid;
-			maxdepth=3;
+			maxdepth=9;
 			//#pragma omp single nowait
 			//#pragma omp sections nowait
 			{

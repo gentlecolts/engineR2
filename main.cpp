@@ -310,6 +310,8 @@ int main(int argc,char** argv){
 	//o.readFromFile("data\\pleo.v8l");
 	printf("after read\n");
 
+	//o.xvec.xyz[1]=0.5;
+
 	SDL_WM_SetCaption("writing",NULL);
 
 	cout<<"blah"<<endl;
@@ -380,9 +382,9 @@ int main(int argc,char** argv){
 		//t=clock()-t;
 		//printf("time: %li\n",t);
 		//*
-		//cam.drawLine(0,0,0,1,0,0,0xff0000);
-		//cam.drawLine(0,0,0,0,1,0,0x00ff00);
-		//cam.drawLine(0,0,0,0,0,1,0x0000ff);
+		cam.drawLine(0,0,0,1,0,0,0xff0000);
+		cam.drawLine(0,0,0,0,1,0,0x00ff00);
+		cam.drawLine(0,0,0,0,0,1,0x0000ff);
 		//*/
 		//cam.traceScene(o[0]);
 		//cam.traceScene(2,o);
