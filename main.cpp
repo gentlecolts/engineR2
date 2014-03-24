@@ -12,7 +12,13 @@ void sleep(long millis){
 }
 #endif
 
+#define bench 1
+
+#if bench
+#define screenres 6
+#else
 #define screenres 2
+#endif
 
 #if screenres==0
 #define xmax 320
@@ -359,10 +365,13 @@ int main(int argc,char** argv){
 	long t;
 	const vec3d xaxis(1,0,0),yaxis(0,1,0),zaxis(0,0,1);
 
-	//camera cam(screen,4*atan(1.0)/3,0,0,1.1);
+	#if bench
+	camera cam(screen,4*atan(1.0)/3,0,0,1.1);
+	#else
 	camera cam(screen,4*atan(1.0)/3,0,0,-2);
 	//camera cam(screen,4*atan(1.0)/3,2,2,-2);
 	//camera cam(screen,4*atan(1.0)/3,0,0,-100);
+	#endif
 
 	//cam.pos.normalize();
 	//cam.lookAt(0,0,0);
@@ -381,7 +390,7 @@ int main(int argc,char** argv){
 		cam.traceScene(&o);
 		//t=clock()-t;
 		//printf("time: %li\n",t);
-		//*
+		/*
 		cam.drawLine(0,0,0,1,0,0,0xff0000);
 		cam.drawLine(0,0,0,0,1,0,0x00ff00);
 		cam.drawLine(0,0,0,0,0,1,0x0000ff);
@@ -411,6 +420,8 @@ int main(int argc,char** argv){
 				goto draw;
 			}
 		//sleep(1);
+		#if !bench
 		goto wait;
+		#endif
 	return 0;
 }

@@ -106,6 +106,7 @@
 		<Unit filename="msc/surface.h" />
 		<Unit filename="vox/polygon.cpp" />
 		<Unit filename="vox/polygon.h" />
+		<Unit filename="vox/ray.cpp" />
 		<Unit filename="vox/vnode.cpp" />
 		<Unit filename="vox/vnode.h" />
 		<Unit filename="vox/vobj.cpp" />

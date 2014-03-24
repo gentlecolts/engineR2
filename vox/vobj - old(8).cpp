@@ -52,11 +52,6 @@ void vobj::updateVals(){
 	varr={xvec,-xvec,yvec,-yvec,zvec,-zvec};
 	#endif
 	*/
-
-	invmtr[0]=yvec.y*zvec.z-zvec.y*yvec.z;invmtr[1]=zvec.x*yvec.z-yvec.x*zvec.z;invmtr[2]=yvec.x*zvec.y-yvec.y*zvec.x;
-	invmtr[3]=zvec.y*xvec.z-xvec.y*zvec.z;invmtr[4]=xvec.x*zvec.z-zvec.x*xvec.z;invmtr[5]=zvec.x*xvec.y-xvec.x*zvec.y;
-	invmtr[6]=xvec.y*yvec.z-yvec.y*xvec.z;invmtr[7]=yvec.x*xvec.z-xvec.x*yvec.z;invmtr[8]=xvec.x*yvec.y-yvec.x*xvec.y;
-	invdet=1/(xvec.x*(yvec.y*zvec.z-zvec.y*yvec.z)-yvec.x*(xvec.y*zvec.z-zvec.y*xvec.z)+zvec.x*(xvec.y*yvec.z-yvec.y*xvec.z));
 }
 
 bool vobj::intersects(vecref vec,vecref origin,const double pixrad,uint32_t* color,double* closeT) const{
@@ -82,7 +77,6 @@ struct nodeval{
 	inline bool operator ==(const nodeval& n) const{return *(long long*)&(tlow) == *(long long*)&(n.tlow);}
 };
 
-#if 0
 ///TODO: try to make this w/o recursion
 bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pixrad,uint32_t* color,int scale,double* closeT) const{
 	///TODO: storing normals might be best
@@ -232,5 +226,4 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pix
 	//printf("%i",scale);
 	return false;
 }
-#endif
 #endif

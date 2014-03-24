@@ -15,6 +15,8 @@ protected:
 	double rsqr;
 
 	virtual void writeout(std::queue<char>* q,vnode* node);
+
+	double invmtr[9],invdet;
 public:
 	vec3d pos,xvec,yvec,zvec;
 	vnode* head;
