@@ -1,7 +1,7 @@
-#if 0
+#include "vobj.h"
+#if testmethod==0
 #include "vobj - old(6).cpp"
 #else
-#include "vobj.h"
 #include "../msc/functions.h"
 #include <algorithm>
 #include <cmath>
@@ -59,6 +59,7 @@ void vobj::updateVals(){
 	invdet=1/(xvec.x*(yvec.y*zvec.z-zvec.y*yvec.z)-yvec.x*(xvec.y*zvec.z-zvec.y*xvec.z)+zvec.x*(xvec.y*yvec.z-yvec.y*xvec.z));
 }
 
+///TODO: fix this stupid shit...there's no need for all this function call overhead
 bool vobj::intersects(vecref vec,vecref origin,const double pixrad,uint32_t* color,double* closeT) const{
 	vec3d v0=origin;//copy the vector so that the original can be modified if this was called in parallel
 	return chkIntersect(head,pos,vec,v0,pixrad,color,0,closeT);

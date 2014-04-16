@@ -38,4 +38,12 @@ public:
 	virtual void writeToFile(std::string filename);
 	virtual void readFromFile(std::string filename);
 };
+
+#define testmethod 2
+/*
+0 -> sorting
+1 -> non recursive plane
+2 -> recursive plane
+*/
+
 #endif // VOBJ_H_INCLUDED

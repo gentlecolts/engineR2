@@ -252,7 +252,7 @@
 1377643865 c:\users\jack\documents\github\enginer2\msc\surface.h
 	<SDL/SDL.h>
 
-1395444158 c:\users\jack\documents\github\enginer2\vox\vobj.h
+1397665815 c:\users\jack\documents\github\enginer2\vox\vobj.h
 	"vnode.h"
 	<string>
 	<fstream>
@@ -297,7 +297,7 @@
 	"vox/vnode.h"
 	"vox/vobj.h"
 
-1395678265 source:c:\users\jack\documents\github\enginer2\main.cpp
+1397665778 source:c:\users\jack\documents\github\enginer2\main.cpp
 	<SDL/SDL.h>
 	"engine.h"
 	<cmath>
@@ -327,9 +327,9 @@
 1382715489 source:c:\users\jack\documents\github\enginer2\vox\vnode.cpp
 	"vnode.h"
 
-1395444960 source:c:\users\jack\documents\github\enginer2\vox\vobj.cpp
-	"vobj - old(6).cpp"
+1397587742 source:c:\users\jack\documents\github\enginer2\vox\vobj.cpp
 	"vobj.h"
+	"vobj - old(6).cpp"
 	"../msc/functions.h"
 	<algorithm>
 	<cmath>
@@ -381,7 +381,7 @@
 	<cstdio>
 	<iostream>
 
-1388885417 c:\users\jack\documents\github\enginer2\vox\vobj - old(6).cpp
+1397623358 c:\users\jack\documents\github\enginer2\vox\vobj - old(6).cpp
 	"vobj.h"
 	"../msc/functions.h"
 	<algorithm>
@@ -389,7 +389,15 @@
 	<cstdio>
 	<iostream>
 
-1395678804 source:c:\users\jack\documents\github\enginer2\vox\ray.cpp
+1397622169 source:c:\users\jack\documents\github\enginer2\vox\ray.cpp
+	"vobj.h"
+	"../msc/functions.h"
+	<algorithm>
+	<cmath>
+	<cstdio>
+	<iostream>
+
+1397665366 source:c:\users\jack\documents\github\enginer2\vox\ray-recurse.cpp
 	"vobj.h"
 	"../msc/functions.h"
 	<algorithm>

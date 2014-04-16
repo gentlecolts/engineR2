@@ -1,4 +1,5 @@
 #include "vobj.h"
+#if testmethod==1
 #include "../msc/functions.h"
 #include <algorithm>
 #include <cmath>
@@ -31,22 +32,21 @@ struct params{
 	params *prev;//,*next;//next is only needed if the chosen algorithm only deallocates at the end (see following todo)
 	vnode *node;
 
-	params(vnode* nodepntr):x(0),y(0),z(0),scale(0.5),i(0),prev(0),node(nodepntr){}
-	params(vnode* nodepntr,params* prevpntr,double x0,double y0,double z0,double s=0.5):
+	params(vnode* nodepntr):x(0),y(0),z(0),scale(1),i(0),prev(0),node(nodepntr){}
+	params(vnode* nodepntr,params* prevpntr,double x0,double y0,double z0,double s=1):
 		x(x0),y(y0),z(z0),scale(s),
 		i(0),
 		prev(prevpntr),node(nodepntr)
 	{}
 	params(params *current,const int flip):
-		x(current->x+current->scale*(1-((current->order[current->i].node<<1)&0x2))),
-		y(current->y+current->scale*(1-(current->order[current->i].node&0x2))),
-		z(current->z+current->scale*(1-((current->order[current->i].node>>1)&0x2))),
-		scale(current->scale/2),
+		x(current->x+current->scale*(0.5-(current->order[current->i].node&0x1))),
+		y(current->y+current->scale*(0.5-((current->order[current->i].node>>1)&0x1))),
+		z(current->z+current->scale*(0.5-((current->order[current->i].node>>2)&0x1))),
+		scale(current->scale*0.5),///TODO: determin which of *0.5 or /2 is better here
 		i(0),
 		prev(current),
 		node(&(current->node->nodes->next[current->order[current->i].node^flip]))
 	{}
-
 };
 
 /**TODO:
@@ -55,6 +55,12 @@ struct params{
   using conditional branches to save deallocations till the end
 -create a version of this function that uses an array (will require maxdepth)
 */
+
+union lldouble{
+	double d;
+	long long l;
+};
+
 bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pixrad,uint32_t* color,int scale,double* closeT) const{
 	//initialize
 
@@ -63,7 +69,8 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pix
 		dx=(invmtr[0]*v.x+invmtr[1]*v.y+invmtr[2]*v.z)*invdet,
 		dy=(invmtr[3]*v.x+invmtr[4]*v.y+invmtr[5]*v.z)*invdet,
 		dz=(invmtr[6]*v.x+invmtr[7]*v.y+invmtr[8]*v.z)*invdet;
-	double x,y,z,tx[3],ty[3],tz[3],tmin,tmax;
+	double x,y,z;
+	lldouble tx[3],ty[3],tz[3],tmin,tmax;
 	params *current=new params(node),*tmppntr;
 	const int sdx=sgn(dx),sdy=sgn(dy),sdz=sgn(dz);
 	const int flip=((sdz<0)<<2)|((sdy<0)<<1)|(sdx<0);
@@ -78,7 +85,33 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pix
 	dy*=sdy;
 	dz*=sdz;
 
-	///TODO:check for case of root node having no children before entering loop
+	/*
+	#define longbits(x) (*(long long*)&(x))
+	#define ltmin longbits(tmin)
+	#define ltmax longbits(tmax)
+	//*/
+
+	#if 1
+	//check if we hit the root node
+	x=x0-current->x;
+	y=y0-current->y;
+	z=z0-current->z;
+
+	//calulate the plane intersections
+	//note that the order of these arrays was chosen to minimize index computation operations
+	tx[0].d=(current->scale-x)/dx;tx[1].d=-x/dx;tx[2].d=(-current->scale-x)/dx;
+	ty[0].d=(current->scale-y)/dy;ty[1].d=-y/dy;ty[2].d=(-current->scale-y)/dy;
+	tz[0].d=(current->scale-z)/dz;tz[1].d=-z/dz;tz[2].d=(-current->scale-z)/dz;
+	tmin.l=max(max(tx[2].l,ty[2].l),tz[2].l);
+	tmax.l=min(min(tx[0].l,ty[0].l),tz[0].l);
+
+	//if our ray hits the root node, then it will hit everything along the path we determine
+	//this check does not need to be made every iteration
+	if((tmin.l>tmax.l) | (tmax.l<0)){
+		return false;
+	}
+	//goto firstloop;
+
 	//begin loop
 	loop:
 		//generate ordered list of intersecting nodes
@@ -88,30 +121,45 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pix
 		y=y0-current->y;
 		z=z0-current->z;
 
-		#define longbits(x) (*(long long*)&(x))
-		#define ltmin longbits(tmin)
-		#define ltmax longbits(tmax)
+		//calulate the plane intersections
+		//note that the order of these arrays was chosen to minimize index computation operations
+		tx[0].d=(current->scale-x)/dx;tx[1].d=-x/dx;tx[2].d=(-current->scale-x)/dx;
+		ty[0].d=(current->scale-y)/dy;ty[1].d=-y/dy;ty[2].d=(-current->scale-y)/dy;
+		tz[0].d=(current->scale-z)/dz;tz[1].d=-z/dz;tz[2].d=(-current->scale-z)/dz;
+		tmin.l=max(max(tx[2].l,ty[2].l),tz[2].l);
+		//ltmax=tmax.l=min(min(tx[0].l,ty[0].l),tz[0].l);
+
+		//firstloop:
+	#else
+	loop:
+		//generate ordered list of intersecting nodes
+		//set up values
+
+		x=x0-current->x;
+		y=y0-current->y;
+		z=z0-current->z;
 
 		//calulate the plane intersections
 		//note that the order of these arrays was chosen to minimize index computation operations
-		tx[0]=(2*current->scale-x)/dx;tx[1]=-x/dx;tx[2]=(-2*current->scale-x)/dx;
-		ty[0]=(2*current->scale-y)/dy;ty[1]=-y/dy;ty[2]=(-2*current->scale-y)/dy;
-		tz[0]=(2*current->scale-z)/dz;tz[1]=-z/dz;tz[2]=(-2*current->scale-z)/dz;
-		ltmin=max(max(longbits(tx[2]),longbits(ty[2])),longbits(tz[2])),
-		ltmax=min(min(longbits(tx[0]),longbits(ty[0])),longbits(tz[0]));
+		tx[0].d=(current->scale-x)/dx;tx[1].d=-x/dx;tx[2].d=(-current->scale-x)/dx;
+		ty[0].d=(current->scale-y)/dy;ty[1].d=-y/dy;ty[2].d=(-current->scale-y)/dy;
+		tz[0].d=(current->scale-z)/dz;tz[1].d=-z/dz;tz[2].d=(-current->scale-z)/dz;
+		tmin.l=max(max(tx[2].l,ty[2].l),tz[2].l);
+		tmax.l=min(min(tx[0].l,ty[0].l),tz[0].l);
 
-		if((ltmin>ltmax) | (ltmax<0)){//misses node
+		if((tmin.l>tmax.l) | (tmax.l<0)){
 			goto up;
 		}
+	#endif
 
 		//find starting node
-		current->order[0].t=ltmin;
-		current->order[0].node=((ltmin<=longbits(tz[1]))<<2)|((ltmin<=longbits(ty[1]))<<1)|(ltmin<=longbits(tx[1]));
+		current->order[0].t=tmin.l;
+		current->order[0].node=((tmin.l<=tz[1].l)<<2)|((tmin.l<=ty[1].l)<<1)|(tmin.l<=tx[1].l);
 
 		//find the rest of the nodes
-		#define YZ(n) longbits(tx[(current->order[n].node)&0x1])
-		#define XZ(n) longbits(ty[((current->order[n].node)&0x2)>>1])
-		#define XY(n) longbits(tz[((current->order[n].node)&0x4)>>2])
+		#define YZ(n) (tx[(current->order[n].node)&0x1].l)
+		#define XZ(n) (ty[((current->order[n].node)&0x2)>>1].l)
+		#define XY(n) (tz[((current->order[n].node)&0x4)>>2].l)
 		#define nodecomp(n) (3*(current->order[n].node+1)+\
 			(((XZ(n)<YZ(n)) & (XZ(n)<=XY(n))) | \
 			(((XY(n)<YZ(n)) & (XY(n)<XZ(n)))<<1)))
@@ -232,3 +280,4 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pix
 		return true;
 	}
 */
+#endif

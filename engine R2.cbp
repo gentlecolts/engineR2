@@ -32,6 +32,7 @@
 					<Add option="-O" />
 					<Add option="-pg" />
 					<Add option="-g" />
+					<Add option="-Ofast" />
 				</Compiler>
 				<Linker>
 					<Add option="-pg -lgmon" />
@@ -49,6 +50,7 @@
 					<Add option="-O2" />
 					<Add option="-O1" />
 					<Add option="-O" />
+					<Add option="-Ofast" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -106,6 +108,7 @@
 		<Unit filename="msc/surface.h" />
 		<Unit filename="vox/polygon.cpp" />
 		<Unit filename="vox/polygon.h" />
+		<Unit filename="vox/ray-recurse.cpp" />
 		<Unit filename="vox/ray.cpp" />
 		<Unit filename="vox/vnode.cpp" />
 		<Unit filename="vox/vnode.h" />

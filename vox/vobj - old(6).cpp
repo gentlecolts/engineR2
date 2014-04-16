@@ -92,6 +92,11 @@ struct nodeval{
 	inline bool operator ==(const nodeval& n) const{return *(long long*)&(tlow) == *(long long*)&(n.tlow);}
 };
 
+union lldouble{
+	double d;
+	long long l;
+};
+
 ///TODO: try to make this w/o recursion
 bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pixrad,uint32_t* color,int scale,double* closeT) const{
 	///TODO: storing normals might be best
@@ -110,6 +115,7 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pix
 			y=abs((*closeT)*v.y+v0.y-p.y),
 			z=abs((*closeT)*v.z+v0.z-p.z);
 		//float dot=abs(v.xyz[(y>x && y>z)+2*(z>x && z>y)]);//*(pixrad*tlow*pixrad*tlow<=rsqr*denom*denom);
+		///TODO: fix this stupid shit
 		float dot=abs(v.xyz[(*(long long*)&y>*(long long*)&x && *(long long*)&y>*(long long*)&z)+2*(*(long long*)&z>*(long long*)&x && *(long long*)&z>*(long long*)&y)]);//*(pixrad*tlow*pixrad*tlow<=rsqr*denom*denom);
 		//float dot=(abs(v.x)+abs(v.y)+abs(v.z))/3;
 
@@ -133,14 +139,18 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pix
 
 	//long long tlow,thigh;
 	long long tlow;
-	double
+	lldouble
 		x1,x2,
 		y1,y2,
 		z1,z2;
 	#define uselongxor 0
 
+	/*
 	double denom;
 	*(long long*)&denom=(0x3ffll-scale-1)<<52;
+	/*/
+	const lldouble denom={.l=(0x3ffll-scale-1)<<52};
+	//*/
 
 	nodeval valarr[8];
 	int numnodes=0;
@@ -148,9 +158,9 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pix
 	bool tmpbool;
 
 	const double
-		a=(1-2*(v.x>=0))*w*denom,
-		b=(1-2*(v.y>=0))*h*denom,
-		c=(1-2*(v.z>=0))*d*denom,
+		a=(1-2*(v.x>=0))*w*denom.d,
+		b=(1-2*(v.y>=0))*h*denom.d,
+		c=(1-2*(v.z>=0))*d*denom.d,
 		invdx=1/v.x,
 		invdy=1/v.y,
 		invdz=1/v.z;
@@ -175,12 +185,12 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pix
 	#endif
 	for(int i=0;i<8;i++){
 	#if 1
-		x1=(x1val+varr[i].x*denom)*invdx;
-		x2=(x2val+varr[i].x*denom)*invdx;
-		y1=(y1val+varr[i].y*denom)*invdy;
-		y2=(y2val+varr[i].y*denom)*invdy;
-		z1=(z1val+varr[i].z*denom)*invdz;
-		z2=(z2val+varr[i].z*denom)*invdz;
+		x1.d=(x1val+varr[i].x*denom.d)*invdx;
+		x2.d=(x2val+varr[i].x*denom.d)*invdx;
+		y1.d=(y1val+varr[i].y*denom.d)*invdy;
+		y2.d=(y2val+varr[i].y*denom.d)*invdy;
+		z1.d=(z1val+varr[i].z*denom.d)*invdz;
+		z2.d=(z2val+varr[i].z*denom.d)*invdz;
 	#else
 		x1=x1val+varr[i].x*denomx;
 		x2=x2val+varr[i].x*denomx;
@@ -189,12 +199,21 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pix
 		z1=z1val+varr[i].z*denomz;
 		z2=z2val+varr[i].z*denomz;
 	#endif
+		/*
 		#define lx1 (*(long long*)&x1)
 		#define lx2 (*(long long*)&x2)
 		#define ly1 (*(long long*)&y1)
 		#define ly2 (*(long long*)&y2)
 		#define lz1 (*(long long*)&z1)
 		#define lz2 (*(long long*)&z2)
+		/*/
+		#define lx1 (x1.l)
+		#define lx2 (x2.l)
+		#define ly1 (y1.l)
+		#define ly2 (y2.l)
+		#define lz1 (z1.l)
+		#define lz2 (z2.l)
+		//*/
 
 		#if uselongxor
 		tlow=(((lx1>=ly1) & (lx1>=lz1))*lx1)^(((ly1>lx1) & (ly1>=lz1))*ly1)^(((lz1>lx1) & (lz1>ly1))*lz1);
@@ -271,7 +290,7 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pix
 		return false;
 	}
 
-	#define longbits(x) (*(long long*)&(x))
+	//#define longbits(x) (*(long long*)&(x))
 	#if 0
 	#define SWAP(x,y) tmpbool=(longbits(valarr[x].tlow)<longbits(valarr[y].tlow));\
 						longbits(valarr[x].tlow)^=longbits(valarr[y].tlow);\
@@ -318,9 +337,9 @@ bool vobj::chkIntersect(vnode* node,vec3d p,vecref v,vecref v0,const double& pix
 	++scale;
 
 	for(int i=0;i<numnodes;i++){
-		vec.x=varr[valarr[i].index].x*denom+p.x;
-		vec.y=varr[valarr[i].index].y*denom+p.y;
-		vec.z=varr[valarr[i].index].z*denom+p.z;
+		vec.x=varr[valarr[i].index].x*denom.d+p.x;
+		vec.y=varr[valarr[i].index].y*denom.d+p.y;
+		vec.z=varr[valarr[i].index].z*denom.d+p.z;
 
 		tlow=valarr[i].tlow;
 

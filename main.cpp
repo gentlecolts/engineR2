@@ -12,7 +12,7 @@ void sleep(long millis){
 }
 #endif
 
-#define bench 1
+#define bench 0
 
 #if bench
 #define screenres 6
