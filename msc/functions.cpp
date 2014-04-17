@@ -25,10 +25,14 @@ double sgn(double x){
 note that this probably does wierd stuff for large enough input or on different platforms,
 but since it works well enough for the small inputs i am giving it, i will use it
 */
+union lldouble{
+	double d;
+	long long l;
+};
 double pow2(long long x){
-	const long long l=(0x3ff+x)<<52;
+	const lldouble l={.l=(0x3ff+x)<<52};
 	//l<<=52;
-	return *(double*)&l;
+	return l.d;
 }
 
 #if 1

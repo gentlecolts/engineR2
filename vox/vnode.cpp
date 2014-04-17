@@ -7,7 +7,7 @@ vnode::vnode(uint8_t shp,uint32_t col):nodes(0),color(col),shape(shp){}
 
 nodelist::nodelist(vnode* node):selfpntr(node){
 	for(int i=0;i<8;i++){
-		next[i].shape=i<<8;
+		next[i].index=i;
 	}
 }
 
@@ -61,11 +61,13 @@ void vnode::initChildren(uint8_t node_shape){
 	if(!nodes){
 		nodes=new nodelist(this);
 	}
-	shape=(shape&0x700)|node_shape;
+	//shape=(shape&0x700)|node_shape;
+	shape=node_shape;
 }
 
 vnode* vnode::getParent(){
-	return *(vnode**)((int)(this) - sizeof(vnode)*((shape>>8)&0x7)-sizeof(vnode*));
+	return *(vnode**)((int)(this) - sizeof(vnode)*(index)-sizeof(vnode*));
+	//return &(this[-index-1])-sizeof(vnode*);
 }
 
 /**TODO: consider making more intelegent delete functions

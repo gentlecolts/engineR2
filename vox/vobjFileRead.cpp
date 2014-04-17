@@ -32,9 +32,10 @@ void vobj::readFromFile(string filename){
 		if(data[0]=='v' && data[1]=='8' && data[2]=='l' ){
 			readFromV8l(data,size,3,head);
 		}else if(
-			(data[0]=='O' && data[1]=='F' && data[2]=='F')
-			||
-			(data[0]=='C' && data[1]=='O' && data[2]=='F' || data[3]=='F')
+			((data[0]=='O') & (data[1]=='F') & (data[2]=='F'))
+			|
+			//((data[0]=='C') & (data[1]=='O') & (data[2]=='F') | (data[3]=='F'))///TODO: did i really mean to make that an or?
+			((data[0]=='C') & (data[1]=='O') & (data[2]=='F') & (data[3]=='F'))
 		){
 			printf("loading from off\n");
 			int tid;

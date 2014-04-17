@@ -97,6 +97,7 @@
 		<Unit filename="cam/matrix.h" />
 		<Unit filename="cam/quat.cpp" />
 		<Unit filename="cam/quat.h" />
+		<Unit filename="cam/ray-bounce.cpp" />
 		<Unit filename="cam/vec3d.cpp" />
 		<Unit filename="cam/vec3d.h" />
 		<Unit filename="engine.cpp" />
@@ -109,7 +110,6 @@
 		<Unit filename="vox/polygon.cpp" />
 		<Unit filename="vox/polygon.h" />
 		<Unit filename="vox/ray-recurse.cpp" />
-		<Unit filename="vox/ray.cpp" />
 		<Unit filename="vox/vnode.cpp" />
 		<Unit filename="vox/vnode.h" />
 		<Unit filename="vox/vobj.cpp" />

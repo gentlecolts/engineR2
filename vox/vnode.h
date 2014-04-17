@@ -17,11 +17,13 @@ struct vnode{
 	vnode* next;
 	#endif
 	uint32_t color;
-	/**shape: 0000 0iii ssss ssss
-	s - 8 bits representing which children exist
-	i - index of this in its cluster of 8 nodes
+	/**
+	shape: 8 bits representing which children exist
+	index: 3 bits representing the index of the current node (used for finding the parent pointer)
+	TODO: find a use for the 21 unused bits
 	*/
-	uint32_t shape;
+	uint8_t shape,index;
+	uint16_t unused;
 
 	vnode(uint8_t shp=0x00,uint32_t col=defcol);
 	vnode(const vnode& node);

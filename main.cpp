@@ -149,172 +149,175 @@ int main(int argc,char** argv){
 	node0=o2.head;
 	node0->initChildren(0xff);
 
-	node1=&(node0->next[0]);
+	node1=&(node0->nodes->next[0]);
 	node1->initChildren(0xff);
 
-	node2=&(node1->next[0]);
+	node2=&(node1->nodes->next[0]);
 	node2->initChildren(0xfe);
-	node2->next[0].color=0x00ff00;
-	node2->next[1].color=0x00ff00;
-	node2->next[2].color=0x00ff00;
-	node2->next[3].color=0x00ff00;
-	node2->next[4].color=0x00ff00;
-	node2->next[5].color=0x00ff00;
-	node2->next[6].color=0x00ff00;
-	node2->next[7].color=0x00ff00;
+	node2->nodes->next[0].color=0x00ff00;
+	node2->nodes->next[1].color=0x00ff00;
+	node2->nodes->next[2].color=0x00ff00;
+	node2->nodes->next[3].color=0x00ff00;
+	node2->nodes->next[4].color=0x00ff00;
+	node2->nodes->next[5].color=0x00ff00;
+	node2->nodes->next[6].color=0x00ff00;
+	node2->nodes->next[7].color=0x00ff00;
 
-	node2=&(node1->next[2]);
+	node2=&(node1->nodes->next[2]);
 	node2->initChildren(0xfb);
-	node2->next[0].color=0xff0000;
-	node2->next[1].color=0x0000ff;
-	node2->next[3].color=0xffff00;
-	node2->next[4].color=0x00ff00;
-	node2->next[5].color=0x00ffff;
-	node2->next[6].color=0xff00ff;
-	node2->next[7].color=0xffffff;
+	node2->nodes->next[0].color=0xff0000;
+	node2->nodes->next[1].color=0x0000ff;
+	node2->nodes->next[3].color=0xffff00;
+	node2->nodes->next[4].color=0x00ff00;
+	node2->nodes->next[5].color=0x00ffff;
+	node2->nodes->next[6].color=0xff00ff;
+	node2->nodes->next[7].color=0xffffff;
 
-	node1=&(node0->next[1]);
+	node1=&(node0->nodes->next[1]);
 	node1->initChildren(0xff);
 
-	node2=&(node1->next[1]);
+	node2=&(node1->nodes->next[1]);
 	node2->initChildren(0xfd);
-	node2->next[0].color=0x00ff00;
-	node2->next[1].color=0x00ff00;
-	node2->next[2].color=0x00ff00;
-	node2->next[3].color=0x00ff00;
-	node2->next[4].color=0x00ff00;
-	node2->next[5].color=0x00ff00;
-	node2->next[6].color=0x00ff00;
-	node2->next[7].color=0x00ff00;
+	node2->nodes->next[0].color=0x00ff00;
+	node2->nodes->next[1].color=0x00ff00;
+	node2->nodes->next[2].color=0x00ff00;
+	node2->nodes->next[3].color=0x00ff00;
+	node2->nodes->next[4].color=0x00ff00;
+	node2->nodes->next[5].color=0x00ff00;
+	node2->nodes->next[6].color=0x00ff00;
+	node2->nodes->next[7].color=0x00ff00;
 
-	node2=&(node1->next[3]);
+	node2=&(node1->nodes->next[3]);
 	node2->initChildren(0xf7);
-	node2->next[0].color=0x007f00;
-	node2->next[1].color=0x007f00;
-	node2->next[2].color=0x007f00;
-	node2->next[3].color=0x007f00;
-	node2->next[4].color=0x007f00;
-	node2->next[5].color=0x007f00;
-	node2->next[6].color=0x007f00;
-	node2->next[7].color=0x007f00;
+	node2->nodes->next[0].color=0x007f00;
+	node2->nodes->next[1].color=0x007f00;
+	node2->nodes->next[2].color=0x007f00;
+	node2->nodes->next[3].color=0x007f00;
+	node2->nodes->next[4].color=0x007f00;
+	node2->nodes->next[5].color=0x007f00;
+	node2->nodes->next[6].color=0x007f00;
+	node2->nodes->next[7].color=0x007f00;
 
-	node1=&(node0->next[4]);
+	node1=&(node0->nodes->next[4]);
 	node1->initChildren(0xff);
 
-	node2=&(node1->next[4]);
+	node2=&(node1->nodes->next[4]);
 	node2->initChildren(0xef);
-	node2->next[0].color=0x00ff00;
-	node2->next[1].color=0x00ff00;
-	node2->next[2].color=0x00ff00;
-	node2->next[3].color=0x00ff00;
-	node2->next[4].color=0x00ff00;
-	node2->next[5].color=0x00ff00;
-	node2->next[6].color=0x00ff00;
-	node2->next[7].color=0x00ff00;
+	node2->nodes->next[0].color=0x00ff00;
+	node2->nodes->next[1].color=0x00ff00;
+	node2->nodes->next[2].color=0x00ff00;
+	node2->nodes->next[3].color=0x00ff00;
+	node2->nodes->next[4].color=0x00ff00;
+	node2->nodes->next[5].color=0x00ff00;
+	node2->nodes->next[6].color=0x00ff00;
+	node2->nodes->next[7].color=0x00ff00;
 
-	node2=&(node1->next[6]);
+	node2=&(node1->nodes->next[6]);
 	node2->initChildren(0xbf);
-	node2->next[0].color=0x007f00;
-	node2->next[1].color=0x007f00;
-	node2->next[2].color=0x007f00;
-	node2->next[3].color=0x007f00;
-	node2->next[4].color=0x007f00;
-	node2->next[5].color=0x007f00;
-	node2->next[6].color=0x007f00;
-	node2->next[7].color=0x007f00;
+	node2->nodes->next[0].color=0x007f00;
+	node2->nodes->next[1].color=0x007f00;
+	node2->nodes->next[2].color=0x007f00;
+	node2->nodes->next[3].color=0x007f00;
+	node2->nodes->next[4].color=0x007f00;
+	node2->nodes->next[5].color=0x007f00;
+	node2->nodes->next[6].color=0x007f00;
+	node2->nodes->next[7].color=0x007f00;
 
-	node1=&(node0->next[5]);
+	node1=&(node0->nodes->next[5]);
 	node1->initChildren(0xff);
 
-	node2=&(node1->next[5]);
+	node2=&(node1->nodes->next[5]);
 	node2->initChildren(0xdf);
-	node2->next[0].color=0x00ff00;
-	node2->next[1].color=0x00ff00;
-	node2->next[2].color=0x00ff00;
-	node2->next[3].color=0x00ff00;
-	node2->next[4].color=0x00ff00;
-	node2->next[5].color=0x00ff00;
-	node2->next[6].color=0x00ff00;
-	node2->next[7].color=0x00ff00;
+	node2->nodes->next[0].color=0x00ff00;
+	node2->nodes->next[1].color=0x00ff00;
+	node2->nodes->next[2].color=0x00ff00;
+	node2->nodes->next[3].color=0x00ff00;
+	node2->nodes->next[4].color=0x00ff00;
+	node2->nodes->next[5].color=0x00ff00;
+	node2->nodes->next[6].color=0x00ff00;
+	node2->nodes->next[7].color=0x00ff00;
 
-	node2=&(node1->next[7]);
+	node2=&(node1->nodes->next[7]);
 	node2->initChildren(0x7f);
-	node2->next[0].color=0x007f00;
-	node2->next[1].color=0x007f00;
-	node2->next[2].color=0x007f00;
-	node2->next[3].color=0x007f00;
-	node2->next[4].color=0x007f00;
-	node2->next[5].color=0x007f00;
-	node2->next[6].color=0x007f00;
-	node2->next[7].color=0x007f00;
+	node2->nodes->next[0].color=0x007f00;
+	node2->nodes->next[1].color=0x007f00;
+	node2->nodes->next[2].color=0x007f00;
+	node2->nodes->next[3].color=0x007f00;
+	node2->nodes->next[4].color=0x007f00;
+	node2->nodes->next[5].color=0x007f00;
+	node2->nodes->next[6].color=0x007f00;
+	node2->nodes->next[7].color=0x007f00;
 
-	node1=&(node0->next[2]);
+	node1=&(node0->nodes->next[2]);
 	node1->initChildren(0xfa);
 
-	node2=&(node1->next[1]);
+	node2=&(node1->nodes->next[1]);
 	node2->initChildren(0xa0);
-	node2=&(node1->next[3]);
+	node2=&(node1->nodes->next[3]);
 	node2->initChildren(0xa0);
-	node2=&(node1->next[4]);
+	node2=&(node1->nodes->next[4]);
 	node2->initChildren(0xa0);
-	node2=&(node1->next[6]);
+	node2=&(node1->nodes->next[6]);
 	node2->initChildren(0xa0);
 
-	node1=&(node0->next[3]);
+	node1=&(node0->nodes->next[3]);
 	node1->initChildren(0xf5);
 
-	node2=&(node1->next[0]);
+	node2=&(node1->nodes->next[0]);
 	node2->initChildren(0x50);
-	node2=&(node1->next[2]);
+	node2=&(node1->nodes->next[2]);
 	node2->initChildren(0x50);
-	node2=&(node1->next[5]);
+	node2=&(node1->nodes->next[5]);
 	node2->initChildren(0x50);
-	node2=&(node1->next[7]);
+	node2=&(node1->nodes->next[7]);
 	node2->initChildren(0x50);
 
-	node1=&(node0->next[6]);
+	node1=&(node0->nodes->next[6]);
 	node1->initChildren(0xaf);
 
-	node2=&(node1->next[0]);
+	node2=&(node1->nodes->next[0]);
 	node2->initChildren(0x0a);
-	node2=&(node1->next[2]);
+	node2=&(node1->nodes->next[2]);
 	node2->initChildren(0x0a);
-	node2=&(node1->next[5]);
+	node2=&(node1->nodes->next[5]);
 	node2->initChildren(0x0a);
-	node2=&(node1->next[7]);
+	node2=&(node1->nodes->next[7]);
 	node2->initChildren(0x0a);
 
-	node1=&(node0->next[7]);
+	node1=&(node0->nodes->next[7]);
 	node1->initChildren(0x5f);
 
-	node2=&(node1->next[1]);
+	node2=&(node1->nodes->next[1]);
 	node2->initChildren(0x05);
-	node2=&(node1->next[3]);
+	node2=&(node1->nodes->next[3]);
 	node2->initChildren(0x05);
-	node2=&(node1->next[4]);
+	node2=&(node1->nodes->next[4]);
 	node2->initChildren(0x05);
-	node2=&(node1->next[6]);
+	node2=&(node1->nodes->next[6]);
 	node2->initChildren(0x05);
 
 	o2.head->calcColors();
 	#endif
 
 	printf("before write\n");
-	//o2.writeToFile("data\\obj.v8l");
+	//o2.writeToFile("data/obj.v8l");
 	printf("after write\n");
 	vobj o(1,1,1,0,0,0);
-	//o.readFromFile("data\\obj.v8l");
+	//o.readFromFile("data/obj.v8l");
 	SDL_WM_SetCaption("loading file",NULL);
-	//o.readFromFile("data\\neptune_4Mtriangles_manifold\\803_neptune_4Mtriangles_manifold.off");
-	//o.readFromFile("data\\WTFZOMFG\\794_lagomaggiore.off");
-	//o.readFromFile("data\\Chinese_dragon\\783_Chinese_dragon.off");
-	//o.readFromFile("data\\chair.off");
-	o.readFromFile("data\\pleo\\pleo.off");
-	//o.readFromFile("data\\abstr.off");
-	//o.readFromFile("data\\octa.off");
-	//o.readFromFile("data\\socket.off");
-	//o.readFromFile("data\\pleo.v8l");
+	//o.readFromFile("data/neptune_4Mtriangles_manifold/803_neptune_4Mtriangles_manifold.off");
+	//o.readFromFile("data/WTFZOMFG/794_lagomaggiore.off");
+	//o.readFromFile("data/Chinese_dragon/783_Chinese_dragon.off");
+	//o.readFromFile("data/chair.off");
+	//o.readFromFile("data/pleo/pleo.off");
+	o.readFromFile("data/pleo.v8l");
+	//o.readFromFile("data/abstr.off");
+	//o.readFromFile("data/octa.off");
+	//o.readFromFile("data/socket.off");
+	//o.readFromFile("data/pleo.v8l");
 	printf("after read\n");
+
+	//o.writeToFile("data/pleo.v8l");
 
 	//o.xvec.xyz[1]=0.5;
 
@@ -322,15 +325,17 @@ int main(int argc,char** argv){
 
 	cout<<"blah"<<endl;
 
-	#if linkparent && 0
+	#if linkparent && 1
 	vnode* head=o.head,*node;
 	printf("---node testing---\nhead: 0x%p\n",head);
 	printf("headpntr: 0x%p\n",&(head->nodes->selfpntr));
 	int diff;
+
+	head=&(head->nodes->next[4]);
 	for(int i=0;i<8;i++){
 		node=&(head->nodes->next[i]);
-		printf("node(%i) addr: 0x%p",i,node);
-		diff=sizeof(vnode)*((node->shape>>8)&0x7)+sizeof(vnode*);
+		printf("node(%i) addr: 0x%p difference:0x%x",i,node,node-head);
+		diff=sizeof(vnode)*(node->index)+sizeof(vnode*);
 		//printf("\t calculated head (inline): 0x%p",*(vnode**)((int)node - diff));
 		node=node->getParent();
 		printf("\t calculated head: 0x%p\t off by: 0x%x\n",node,node-head);
@@ -338,8 +343,8 @@ int main(int argc,char** argv){
 	#endif
 
 	//sleep(100);
-	//o.writeToFile("data\\chinese_dragon.v8l");
-	//o.writeToFile("data\\pleo.v8l");
+	//o.writeToFile("data/chinese_dragon.v8l");
+	//o.writeToFile("data/pleo.v8l");
 
 	/*
 	o2.zvec.x=0.2;
