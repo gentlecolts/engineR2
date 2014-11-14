@@ -101,6 +101,11 @@
 		<Unit filename="cam/ray-bounce.cpp" />
 		<Unit filename="cam/vec3d.cpp" />
 		<Unit filename="cam/vec3d.h" />
+		<Unit filename="demoMakeObj.cpp" />
+		<Unit filename="demoTesting.cpp" />
+		<Unit filename="demoVobjFile.cpp" />
+		<Unit filename="demos.cpp" />
+		<Unit filename="demos.h" />
 		<Unit filename="engine.cpp" />
 		<Unit filename="engine.h" />
 		<Unit filename="main.cpp" />
