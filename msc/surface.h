@@ -3,7 +3,8 @@
 
 #include <SDL/SDL.h>
 typedef SDL_Surface surface;//temporary useage until i can write my own surface class
+//typedef SDL_Texture surface;
 
-void freeSurface(surface* s);
+//void freeSurface(surface* s);
 
 #endif // SURFACE_H_INCLUDED

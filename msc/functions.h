@@ -2,6 +2,7 @@
 #define FUNCTIONS_H_INCLUDED
 
 #include <SDL/SDL.h>
+#include <stdint.h>
 
 double invsqrt(double x);
 

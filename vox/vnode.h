@@ -3,6 +3,7 @@
 
 #include <SDL/SDL.h>
 #include "../cam/vec3d.h"
+#include <stdint.h>
 
 #define linkparent 1
 
