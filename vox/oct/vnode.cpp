@@ -1,4 +1,4 @@
-#include "vnode.h"
+#include "../vnode.h"
 
 uint32_t vnode::defcol=0xffffff;
 

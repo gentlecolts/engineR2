@@ -1,6 +1,6 @@
-#include "polygon.h"
-#include "vnode.h"
-#include "../cam/vec3d.h"
+#include "../polygon.h"
+#include "../vnode.h"
+#include "../../cam/vec3d.h"
 #include <cmath>
 #include <algorithm>
 #include <omp.h>

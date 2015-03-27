@@ -1,5 +1,5 @@
-#include "vobj.h"
-#include "../msc/functions.h"
+#include "../vobj.h"
+#include "../../msc/functions.h"
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
@@ -7,7 +7,13 @@
 
 using namespace std;
 
-vobj::vobj(double wid,double hght,double dep,double x0,double y0,double z0):pos(x0,y0,z0),xvec(wid,0,0),yvec(0,hght,0),zvec(0,0,dep){
+//vobj::vobj(double wid,double hght,double dep,double x0,double y0,double z0):pos(x0,y0,z0),xvec(wid,0,0),yvec(0,hght,0),zvec(0,0,dep){
+vobj::vobj(double wid,double hght,double dep,double x0,double y0,double z0){
+	///TODO: do this better, preferably as an initializer list
+	pos=vec3d(x0,y0,z0);
+	xvec=vec3d(wid,0,0);
+	yvec=vec3d(0,hght,0);
+	zvec=vec3d(0,0,dep);
 	head=new vnode();
 }
 
@@ -57,11 +63,11 @@ void vobj::updateVals(){
 }
 
 ///TODO: fix this stupid shit...there's no need for all this function call overhead
-bool vobj::intersects(vecref vec,vecref origin,const double pixrad,uint32_t* color,double* closeT) const{
+bool vobj::intersects(vecref vec,vecref origin,const double pixrad,uint32_t* color,double* closeT){
 	vec3d v0=origin;//copy the vector so that the original can be modified if this was called in parallel
 	return chkIntersect(head,pos,vec,v0,pixrad,color,0,closeT);
 }
-bool vobj::intersects(vecref vec,double x0,double y0,double z0,const double pixrad,uint32_t* color,double* closeT) const{
+bool vobj::intersects(vecref vec,double x0,double y0,double z0,const double pixrad,uint32_t* color,double* closeT){
 	vec3d v0(x0,y0,z0);
 	return chkIntersect(head,pos,vec,v0,pixrad,color,0,closeT);
 }

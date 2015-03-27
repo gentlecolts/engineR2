@@ -1,4 +1,4 @@
-#include "vobj.h"
+#include "../vobj.h"
 #include <cstdio>
 #include "vobjReadV8l.h"
 #include "vobjReadOFF.h"
@@ -29,15 +29,18 @@ void vobj::readFromFile(string filename){
 		file.read(data,size);
 		file.close();
 		//printf("before readin\n");
-		if(data[0]=='v' && data[1]=='8' && data[2]=='l' ){
+		//if(data[0]=='v' && data[1]=='8' && data[2]=='l' ){
+		if(!memcmp(data,"v8l",3)){
 			readFromV8l(data,size,3,head);
-		}else if(
+		}else if(!memcmp(data,"OFF",3) | !memcmp(data,"COFF",4)
+/*
 			((data[0]=='O') & (data[1]=='F') & (data[2]=='F'))
 			|
 			//((data[0]=='C') & (data[1]=='O') & (data[2]=='F') | (data[3]=='F'))///TODO: did i really mean to make that an or?
 			((data[0]=='C') & (data[1]=='O') & (data[2]=='F') & (data[3]=='F'))
+*/
 		){
-			printf("loading from off\n");
+			//printf("loading from off\n");//debugging only
 			int tid;
 			maxdepth=9;
 			//#pragma omp single nowait

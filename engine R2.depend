@@ -237,11 +237,11 @@
 	"quat.h"
 	<omp.h>
 
-1381516806 c:\users\jack\documents\github\enginer2\cam\camera.h
+1416093945 c:\users\jack\documents\github\enginer2\cam\camera.h
 	"matrix.h"
 	"vec3d.h"
 	"../msc/surface.h"
-	"../vox/vobj.h"
+	"../vox/obj.h"
 
 1384802881 c:\users\jack\documents\github\enginer2\cam\matrix.h
 	<exception>
@@ -252,8 +252,9 @@
 1406253854 c:\users\jack\documents\github\enginer2\msc\surface.h
 	<SDL/SDL.h>
 
-1397664738 c:\users\jack\documents\github\enginer2\vox\vobj.h
+1416093978 c:\users\jack\documents\github\enginer2\vox\vobj.h
 	"vnode.h"
+	"obj.h"
 	<string>
 	<fstream>
 	<queue>
@@ -299,7 +300,7 @@
 	"vox/vnode.h"
 	"vox/vobj.h"
 
-1415993161 source:c:\users\jack\documents\github\enginer2\main.cpp
+1415993306 source:c:\users\jack\documents\github\enginer2\main.cpp
 	<SDL/SDL.h>
 	<cmath>
 	<iostream>
@@ -406,7 +407,7 @@
 	<cstdio>
 	<iostream>
 
-1406253854 source:c:\users\jack\documents\github\enginer2\cam\ray-bounce.cpp
+1416180724 source:c:\users\jack\documents\github\enginer2\cam\ray-bounce.cpp
 	<SDL/SDL.h>
 	"camera.h"
 	"../msc/functions.h"
@@ -436,4 +437,63 @@
 1415993136 source:c:\users\jack\documents\github\enginer2\demovobjfile.cpp
 	"demos.h"
 	<iostream>
+
+1416096736 c:\users\jack\documents\github\enginer2\vox\obj.h
+	<stdint.h>
+
+1416098145 source:c:\users\jack\documents\github\enginer2\vox\oct\polygon.cpp
+	"../polygon.h"
+	"../vnode.h"
+	"../../cam/vec3d.h"
+	<cmath>
+	<algorithm>
+	<omp.h>
+
+1416098149 source:c:\users\jack\documents\github\enginer2\vox\oct\vnode.cpp
+	"../vnode.h"
+
+1416098155 source:c:\users\jack\documents\github\enginer2\vox\oct\vobj.cpp
+	"../vobj.h"
+	"../../msc/functions.h"
+	<algorithm>
+	<cmath>
+	<cstdio>
+	<iostream>
+
+1416529970 source:c:\users\jack\documents\github\enginer2\vox\oct\vobjfileread.cpp
+	"../vobj.h"
+	<cstdio>
+	"vobjReadV8l.h"
+	"vobjReadOFF.h"
+	<cmath>
+	<ctime>
+	<omp.h>
+
+1416098166 c:\users\jack\documents\github\enginer2\vox\oct\vobjreadv8l.h
+	"../vobj.h"
+
+1416098171 c:\users\jack\documents\github\enginer2\vox\oct\vobjreadoff.h
+	"../vobj.h"
+
+1416098176 source:c:\users\jack\documents\github\enginer2\vox\oct\vobjfilewrite.cpp
+	"../vobj.h"
+	<cstdio>
+	<iostream>
+
+1416098187 source:c:\users\jack\documents\github\enginer2\vox\oct\vobjreadoff.cpp
+	"vobjReadOff.h"
+	"../polygon.h"
+	<cstdio>
+	<iostream>
+	<sstream>
+	<cmath>
+	<omp.h>
+	<algorithm>
+	<functional>
+	<cctype>
+	<locale>
+
+1381761489 source:c:\users\jack\documents\github\enginer2\vox\oct\vobjreadv8l.cpp
+	"vobjReadV8l.h"
+	<cstdio>
 

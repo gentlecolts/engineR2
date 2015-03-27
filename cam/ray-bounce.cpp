@@ -18,7 +18,7 @@ using namespace std;
 /**TODO: clean this up and, once using the gpu, implement photon mapping
 note to self: the initial phase of path tracing should be done by lightsources
 */
-void camera::traceScene(vobj* object){
+void camera::traceScene(obj* object){
 	if(object==NULL){
 		return;
 	}
@@ -60,7 +60,7 @@ void camera::traceScene(vobj* object){
 	object->updateVals();
 	const vec3d tmp=pos-dir;
 	//const double pixrad=max(xvec.magnitude()/w,yvec.magnitude()/h)/dir.magnitude();
-	const double pixrad=sqrt(xvec.magSqr()/(w*w)+yvec.magSqr()/(h*h))/dir.magnitude();//division is needed so that
+	const double pixrad=sqrt(xvec.magSqr()/(w*w)+yvec.magSqr()/(h*h))/dir.magnitude();///what does dividing by dir's magnitude accomplish?
 
 	#if logtime
 	int rayCount=0;
@@ -68,168 +68,6 @@ void camera::traceScene(vobj* object){
 
 	//printf("%i\n",omp_get_dynamic());
 
-	#define conetrace 0
-
-	#if conetrace
-	#define blockwidth 4
-
-	SDL_Surface* tmpscrn=SDL_CreateRGBSurface(
-		SDL_HWACCEL|SDL_HWSURFACE|SDL_HWPALETTE|SDL_ASYNCBLIT,
-		blockwidth,blockwidth,32,
-		0x00ff0000,
-		0x0000ff00,
-		0x000000ff,
-		0x00000000
-	);
-
-	uint32_t* tmppix=(uint32_t*)tmpscrn->pixels;
-	SDL_Rect rect;
-	rect.w=blockwidth;
-	rect.h=blockwidth;
-
-	int kx,ky;
-
-	#if 1
-	/*const double invrad=invsqrt(xvec.magSqr()+yvec.magSqr());
-	const double conecos=
-	/*/
-	//dir=1/(2tan(theta)) note that both use theta/2, and therefore the division is not necessary
-	//theta=atan(1/(2dir));
-	const double theta=atan(dir.invMagnitude()/2);
-	const double
-		conesin=sin(theta*invsqrt(w*w+h*h)/2);
-		conecos=cos(theta*invsqrt(w*w+h*h)/2);
-	//*/
-
-	for(int i=0;i<w*h;i+=blockwidth){
-		v=dir;
-		v+=((2.0*(i%w+blockwidth/2))/w-1)*xvec;
-		v+=((2.0*(h-(i/w+blockwidth/2)-1))/h-1)*yvec;
-
-
-
-		if(true){
-			for(int k=0;k<blockwidth*blockwidth;k++){
-				kx=i%w+(k%blockwidth);
-				ky=i/w+k/blockwidth;
-				//*/
-				v=dir;
-				v+=((2.0*kx)/w-1)*xvec;
-				v+=((2.0*(h-ky-1))/h-1)*yvec;
-
-				v.normalize();
-				test=object->intersects(v,tmp,pixrad,&color,&t);
-
-				falloff=expr;
-				r=((color>>16)&0xff)*falloff;
-				g=((color>>8)&0xff)*falloff;
-				b=(color&0xff)*falloff;
-
-				//pixels[kx+w*ky]=(test*((0xff<<24)|(r<<16)|(g<<8)|b))^((!test)*bgCol);
-				tmppix[k]=(test*((0xff<<24)|(r<<16)|(g<<8)|b))^((!test)*bgCol);
-			}
-			rect.x=i%w;
-			rect.y=i/w;
-			SDL_BlitSurface(tmpscrn,&tmpscrn->clip_rect,scrn,&rect);
-		}
-	}
-	/**sphere cone intersection pseudocode:
-	bool SphereIntersectsCube (Sphere S, Cone K)
-	{
-		U = K.vertex - (Sphere.radius/K.sin)*K.axis;
-		D = S.center - U;
-		if( Dot(K.axis,D) >= Length(D)*k.cos )
-		{
-			// center is inside K''
-			D = S.center - K.vertex;
-			if( -Dot(K.axis,D) >= Length(D)*K.sin )
-			{
-				// center is inside K'' and inside K'
-				return Length(D) <= S.radius;
-			}
-			else
-			{
-				// center is inside K'' and outside K''
-				return true;
-			}
-		}
-		else
-		{
-			// center is outside K''
-			return false;
-		}
-	}
-	*/
-	#else
-	const double conerad=(pixrad*blockwidth)/2;
-	double dot,rad;
-	int boundx,boundy;
-
-	//#pragma omp parallel for
-	for(int i=0;i<w*h;i+=blockwidth){
-		v=dir;
-		v+=((2.0*(i%w+blockwidth/2))/w-1)*xvec;
-		v+=((2.0*(h-(i/w+blockwidth/2)-1))/h-1)*yvec;
-
-		dot=object->pos.dot(v);
-		dot*=dot;
-		dot/=v.magSqr();
-		rad=
-			conerad/invsqrt(object->pos.magSqr()-dot)
-			+
-			1/invsqrt(
-				object->w*object->w
-				+
-				object->h*object->h
-				+
-				object->d*object->d);
-		rad*=rad;
-
-		if(dot<=rad){
-			#if 1
-			for(int k=0;k<blockwidth*blockwidth;k++){
-			#else
-			/*
-			boundx=((w-(i%w+blockwidth)>0)*(min(blockwidth,w-(i%w+blockwidth))^blockwidth))^blockwidth;
-			boundy=((h-(i/w+blockwidth)>0)*(min(blockwidth,h-(i/w+blockwidth))^blockwidth))^blockwidth;
-			/*/
-			boundx=min(blockwidth,w-(i%w+blockwidth));
-			boundy=min(blockwidth,h-(i/w+blockwidth));
-			//*/
-			for(int k=0;k<boundx*boundy;k++){
-			#endif
-				/*
-				kx=i%w+(k%boundx);
-				ky=i/w+k/boundx;
-				/*/
-				kx=i%w+(k%blockwidth);
-				ky=i/w+k/blockwidth;
-				//*/
-				v=dir;
-				v+=((2.0*kx)/w-1)*xvec;
-				v+=((2.0*(h-ky-1))/h-1)*yvec;
-
-				v.normalize();
-				test=object->intersects(v,tmp,pixrad,&color,&t);
-
-				falloff=expr;
-				r=((color>>16)&0xff)*falloff;
-				g=((color>>8)&0xff)*falloff;
-				b=(color&0xff)*falloff;
-
-				//pixels[kx+w*ky]=(test*((0xff<<24)|(r<<16)|(g<<8)|b))^((!test)*bgCol);
-				tmppix[k]=(test*((0xff<<24)|(r<<16)|(g<<8)|b))^((!test)*bgCol);
-			}
-			rect.x=i%w;
-			rect.y=i/w;
-			SDL_BlitSurface(tmpscrn,&tmpscrn->clip_rect,scrn,&rect);
-		}
-	}//}
-	#endif
-
-	SDL_FreeSurface(tmpscrn);
-
-	#else
 	#ifndef WIN64
 	#if logtime
 	#pragma omp parallel for private(t,test,r,g,b,v,color,falloff) reduction( + : rayCount )// schedule(dynamic,32)
@@ -294,11 +132,10 @@ void camera::traceScene(vobj* object){
 	printf("number of rays that hit: %i\ttime: %lli\tseconds: %llf\n",rayCount,time,double(time)/CLOCKS_PER_SEC);
 	//cout<<"number of rays that hit: "<<rayCount<<"\ttime: "<<time<<"\tseconds: "<<time/CLOCKS_PER_SEC<<endl;
 	#endif
-	#endif
 
 	#undef w
 	#undef h
 	#undef expr
 }
-void camera::traceScene(int numobj,vobj object[]){
+void camera::traceScene(int numobj,obj* object){
 }

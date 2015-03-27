@@ -44,7 +44,6 @@
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-march=core2" />
 					<Add option="-fomit-frame-pointer" />
 					<Add option="-fexpensive-optimizations" />
 					<Add option="-O3" />
@@ -113,19 +112,20 @@
 		<Unit filename="msc/functions.h" />
 		<Unit filename="msc/surface.cpp" />
 		<Unit filename="msc/surface.h" />
-		<Unit filename="vox/polygon.cpp" />
+		<Unit filename="vox/obj.h" />
+		<Unit filename="vox/oct/polygon.cpp" />
+		<Unit filename="vox/oct/vnode.cpp" />
+		<Unit filename="vox/oct/vobj.cpp" />
+		<Unit filename="vox/oct/vobjFileRead.cpp" />
+		<Unit filename="vox/oct/vobjFileWrite.cpp" />
+		<Unit filename="vox/oct/vobjReadOFF.cpp" />
+		<Unit filename="vox/oct/vobjReadOFF.h" />
+		<Unit filename="vox/oct/vobjReadV8l.cpp" />
+		<Unit filename="vox/oct/vobjReadV8l.h" />
 		<Unit filename="vox/polygon.h" />
 		<Unit filename="vox/ray-recurse.cpp" />
-		<Unit filename="vox/vnode.cpp" />
 		<Unit filename="vox/vnode.h" />
-		<Unit filename="vox/vobj.cpp" />
 		<Unit filename="vox/vobj.h" />
-		<Unit filename="vox/vobjFileRead.cpp" />
-		<Unit filename="vox/vobjFileWrite.cpp" />
-		<Unit filename="vox/vobjReadOFF.cpp" />
-		<Unit filename="vox/vobjReadOFF.h" />
-		<Unit filename="vox/vobjReadV8l.cpp" />
-		<Unit filename="vox/vobjReadV8l.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

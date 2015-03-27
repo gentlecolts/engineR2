@@ -1,4 +1,4 @@
-#include "vobj.h"
+#include "../vobj.h"
 #include <cstdio>
 #include <iostream>
 using namespace std;

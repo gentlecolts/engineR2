@@ -4,7 +4,7 @@
 #include "matrix.h"
 #include "vec3d.h"
 #include "../msc/surface.h"
-#include "../vox/vobj.h"
+#include "../vox/obj.h"
 
 matrix getRotMatrix(vec3d u,double theta);
 
@@ -39,8 +39,8 @@ public:
 	virtual void drawLine(double x0,double y0,double z0,double x1,double y1,double z1,uint32_t color);
 	virtual void drawLine(vecref p0,vecref p1,uint32_t color);
 
-	virtual void traceScene(vobj* object);//for now it only traces one object at a time, this would likely be a linked list
-	virtual void traceScene(int numobj,vobj object[]);//for now it only traces one object at a time, this would likely be a linked list
+	virtual void traceScene(obj* object);//for now it only traces one object at a time, this would likely be a linked list
+	virtual void traceScene(int numobj,obj* object);//for now it only traces one object at a time, this would likely be a linked list
 
 	virtual void setViewangle(double angle);
 	virtual double getViewangle() const;

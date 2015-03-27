@@ -1,5 +1,5 @@
 #include "vobjReadOff.h"
-#include "polygon.h"
+#include "../polygon.h"
 #include <cstdio>
 #include <iostream>
 #include <sstream>

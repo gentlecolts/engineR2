@@ -1,7 +1,7 @@
 #ifndef VOBJREADOFF_H_INCLUDED
 #define VOBJREADOFF_H_INCLUDED
 
-#include "vobj.h"
+#include "../vobj.h"
 typedef std::ifstream::pos_type pos_t;
 
 void readFromOFF(char* data,pos_t size,pos_t strpos,vnode* head,int maxdepth);
