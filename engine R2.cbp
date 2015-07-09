@@ -75,6 +75,43 @@
 					<Add option="-lSDLmain -lSDL" />
 				</Linker>
 			</Target>
+			<Target title="Debug-linux">
+				<Option output="bin/Debug-linux/engine R2" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug-linux/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-pg" />
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add option="-pg" />
+					<Add option="-lSDLmain -lSDL -pg -lgmon" />
+					<Add option="-lgomp -lpthread" />
+				</Linker>
+			</Target>
+			<Target title="Release-linux">
+				<Option output="bin/Release-linux/engine R2" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release-linux/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-fomit-frame-pointer" />
+					<Add option="-fexpensive-optimizations" />
+					<Add option="-O3" />
+					<Add option="-O2" />
+					<Add option="-O1" />
+					<Add option="-O" />
+					<Add option="-Ofast" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-lSDLmain -lSDL" />
+					<Add option="-lgomp -lpthread" />
+				</Linker>
+			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-march=core2" />

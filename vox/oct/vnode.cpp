@@ -66,7 +66,11 @@ void vnode::initChildren(uint8_t node_shape){
 }
 
 vnode* vnode::getParent(){
+	#ifdef WIN32
 	return *(vnode**)((int)(this) - sizeof(vnode)*(index)-sizeof(vnode*));
+	#else
+	return *(vnode**)((long)(this) - sizeof(vnode)*(index)-sizeof(vnode*));
+	#endif
 	//return &(this[-index-1])-sizeof(vnode*);
 }
 
