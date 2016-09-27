@@ -87,7 +87,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-pg" />
-					<Add option="-lSDLmain -lSDL -pg -lgmon" />
+					<Add option="-lSDLmain -lSDL -pg" />
 					<Add option="-lgomp -lpthread" />
 				</Linker>
 			</Target>
@@ -114,7 +114,6 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-march=core2" />
 			<Add option="-Wshadow" />
 			<Add option="-Winit-self" />
 			<Add option="-Wredundant-decls" />
@@ -122,7 +121,7 @@
 			<Add option="-Winline" />
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
-			<Add option="-fopenmp" />
+			<Add option="-fopenmp -march=native" />
 		</Compiler>
 		<Linker>
 			<Add option="-lmingw32 -lsdlmain -lsdl" />
