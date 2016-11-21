@@ -899,3 +899,195 @@
 	<cstdio>
 	<iostream>
 
+1479745098 source:c:\users\jack\documents\github\enginer2(sourcetree)\cam\camera.cpp
+	<SDL/SDL.h>
+	"camera.h"
+	"../msc/functions.h"
+	<cmath>
+	<string>
+	<ctime>
+	<iostream>
+	"quat.h"
+	<omp.h>
+
+1479745098 c:\users\jack\documents\github\enginer2(sourcetree)\cam\camera.h
+	"matrix.h"
+	"vec3d.h"
+	"../msc/surface.h"
+	"../vox/obj.h"
+
+1479745098 c:\users\jack\documents\github\enginer2(sourcetree)\cam\matrix.h
+	<exception>
+
+1479745098 c:\users\jack\documents\github\enginer2(sourcetree)\cam\vec3d.h
+	"matrix.h"
+
+1479745098 c:\users\jack\documents\github\enginer2(sourcetree)\msc\surface.h
+	<SDL/SDL.h>
+
+1479745098 c:\users\jack\documents\github\enginer2(sourcetree)\vox\obj.h
+	<stdint.h>
+
+1479745098 c:\users\jack\documents\github\enginer2(sourcetree)\msc\functions.h
+	<SDL/SDL.h>
+	<stdint.h>
+
+1479745098 c:\users\jack\documents\github\enginer2(sourcetree)\cam\quat.h
+
+1479745098 source:c:\users\jack\documents\github\enginer2(sourcetree)\cam\matrix.cpp
+	"matrix.h"
+	"vec3d.h"
+	<cmath>
+	<cstdio>
+
+1479745098 source:c:\users\jack\documents\github\enginer2(sourcetree)\cam\quat.cpp
+	"quat.h"
+	"matrix.h"
+	"vec3d.h"
+	"../msc/functions.h"
+	<cmath>
+
+1479745098 source:c:\users\jack\documents\github\enginer2(sourcetree)\cam\ray-bounce.cpp
+	<SDL/SDL.h>
+	"camera.h"
+	"../msc/functions.h"
+	<cmath>
+	<string>
+	<ctime>
+	<iostream>
+	"quat.h"
+	<omp.h>
+
+1479745098 source:c:\users\jack\documents\github\enginer2(sourcetree)\cam\vec3d.cpp
+	"vec3d.h"
+	"../msc/functions.h"
+	<cmath>
+
+1479745098 source:c:\users\jack\documents\github\enginer2(sourcetree)\demomakeobj.cpp
+	"demos.h"
+
+1479745098 c:\users\jack\documents\github\enginer2(sourcetree)\demos.h
+	"engine.h"
+	<SDL/SDL.h>
+
+1479745098 c:\users\jack\documents\github\enginer2(sourcetree)\engine.h
+	"cam/camera.h"
+	"cam/matrix.h"
+	"cam/vec3d.h"
+	"msc/functions.h"
+	"msc/surface.h"
+	"vox/vnode.h"
+	"vox/vobj.h"
+
+1479745098 c:\users\jack\documents\github\enginer2(sourcetree)\vox\vnode.h
+	<SDL/SDL.h>
+	"../cam/vec3d.h"
+	<stdint.h>
+
+1479745098 c:\users\jack\documents\github\enginer2(sourcetree)\vox\vobj.h
+	"vnode.h"
+	"obj.h"
+	<string>
+	<fstream>
+	<queue>
+
+1479745098 source:c:\users\jack\documents\github\enginer2(sourcetree)\demos.cpp
+	"demos.h"
+	<windows.h>
+
+1479745098 source:c:\users\jack\documents\github\enginer2(sourcetree)\demotesting.cpp
+	"demos.h"
+	<iostream>
+	<cmath>
+
+1479745098 source:c:\users\jack\documents\github\enginer2(sourcetree)\demovobjfile.cpp
+	"demos.h"
+	<iostream>
+
+1479745098 source:c:\users\jack\documents\github\enginer2(sourcetree)\engine.cpp
+	"engine.h"
+
+1479745098 source:c:\users\jack\documents\github\enginer2(sourcetree)\main.cpp
+	<SDL/SDL.h>
+	<cmath>
+	<iostream>
+	<ctime>
+	"demos.h"
+	<cstdlib>
+
+1479745098 source:c:\users\jack\documents\github\enginer2(sourcetree)\msc\functions.cpp
+	"functions.h"
+	<algorithm>
+	<cmath>
+
+1479745098 source:c:\users\jack\documents\github\enginer2(sourcetree)\msc\surface.cpp
+	"surface.h"
+
+1479745098 source:c:\users\jack\documents\github\enginer2(sourcetree)\vox\oct\polygon.cpp
+	"../polygon.h"
+	"../vnode.h"
+	"../../cam/vec3d.h"
+	<cmath>
+	<algorithm>
+	<omp.h>
+
+1479745098 c:\users\jack\documents\github\enginer2(sourcetree)\vox\polygon.h
+	<stdint.h>
+
+1479745098 source:c:\users\jack\documents\github\enginer2(sourcetree)\vox\oct\vnode.cpp
+	"../vnode.h"
+
+1479745098 source:c:\users\jack\documents\github\enginer2(sourcetree)\vox\oct\vobj.cpp
+	"../vobj.h"
+	"../../msc/functions.h"
+	<algorithm>
+	<cmath>
+	<cstdio>
+	<iostream>
+
+1479745240 source:c:\users\jack\documents\github\enginer2(sourcetree)\vox\oct\vobjfileread.cpp
+	"../vobj.h"
+	<cstdio>
+	"vobjReadV8l.h"
+	"vobjReadOFF.h"
+	<cmath>
+	<ctime>
+	<cstring>
+	<omp.h>
+
+1479745098 c:\users\jack\documents\github\enginer2(sourcetree)\vox\oct\vobjreadv8l.h
+	"../vobj.h"
+
+1479745098 c:\users\jack\documents\github\enginer2(sourcetree)\vox\oct\vobjreadoff.h
+	"../vobj.h"
+
+1479745098 source:c:\users\jack\documents\github\enginer2(sourcetree)\vox\oct\vobjfilewrite.cpp
+	"../vobj.h"
+	<cstdio>
+	<iostream>
+
+1479745098 source:c:\users\jack\documents\github\enginer2(sourcetree)\vox\oct\vobjreadoff.cpp
+	"vobjReadOFF.h"
+	"../polygon.h"
+	<cstdio>
+	<iostream>
+	<sstream>
+	<cmath>
+	<omp.h>
+	<algorithm>
+	<functional>
+	<cctype>
+	<locale>
+
+1479745098 source:c:\users\jack\documents\github\enginer2(sourcetree)\vox\oct\vobjreadv8l.cpp
+	"vobjReadV8l.h"
+	<cstdio>
+
+1479745098 source:c:\users\jack\documents\github\enginer2(sourcetree)\vox\ray-recurse.cpp
+	"vobj.h"
+	"../msc/functions.h"
+	<algorithm>
+	<cmath>
+	<cstdio>
+	<iostream>
+

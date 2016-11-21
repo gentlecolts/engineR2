@@ -5,6 +5,7 @@
 
 #include <cmath>
 #include <ctime>
+#include <cstring>
 
 #include <omp.h>
 using namespace std;
